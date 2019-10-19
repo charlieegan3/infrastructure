@@ -1,0 +1,17 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: prolific-boi
+spec:
+  groups:
+  - name: kubernetes-resources
+    rules:
+    - alert: ProlificBoi
+      annotations:
+        message: All these awesome side projects are pushing the cluster close to capacity
+      expr: |-
+        sum(node:node_num_cpu:sum) - sum(namespace_name:kube_pod_container_resource_requests_cpu_cores:sum) < 0.5
+      for: 5m
+      labels:
+        severity: warning

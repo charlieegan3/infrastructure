@@ -1,0 +1,79 @@
+{{- range $_, $job :=  .Values.cronjobs }}
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: "{{ $job.name }}"
+  namespace: {{ include "serializer.name" $ }}
+spec:
+  schedule: "{{ $job.schedule }}"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    metadata:
+      labels:
+        cronjob: "{{ $job.name }}"
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: Never
+          initContainers:
+          - name: vault-authenticator
+            image: registry.hub.docker.com/sethvargo/vault-kubernetes-authenticator:0.1.0
+            volumeMounts:
+            - name: vault-token
+              mountPath: /home/vault
+            env:
+            - name: TOKEN_DEST_PATH
+              value: /home/vault/.vault-token
+            - name: VAULT_ADDR
+              value: "http://vs-vault.vault:8200"
+            - name: VAULT_ROLE
+              value: serializer
+          - name: consul-template
+            image: registry.hub.docker.com/hashicorp/consul-template:0.19.5-scratch
+            command:
+            - /consul-template
+            - -config
+            - /etc/consul-template/config.hcl
+            - -log-level
+            - debug
+            - -once
+            volumeMounts:
+            - name: secrets
+              mountPath: /etc/secrets
+            - name: vault-token
+              mountPath: /home/vault
+            - name: consul-template-config
+              mountPath: /etc/consul-template
+            env:
+            - name: HOME
+              value: /home/vault
+            - name: VAULT_ADDR
+              value: "http://vs-vault.vault:8200"
+            - name: VAULT_SKIP_VERIFY
+              value: "true"
+          containers:
+          - image: "{{ $.Values.images.rails }}"
+            name: "{{ $job.name }}"
+            command: ["bundle", "exec", "rake"]
+            args:
+            - "{{ $job.command }}"
+            envFrom:
+            - configMapRef:
+                name: serializer-config
+            volumeMounts:
+            - mountPath: /etc/rails/
+              name: secrets
+          volumes:
+          - name: secrets
+            emptyDir:
+              medium: Memory
+          - name: vault-token
+            emptyDir:
+              medium: Memory
+          - name: consul-template-config
+            configMap:
+              name: consul-template
+{{- end }}

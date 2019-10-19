@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: serializer-config
+  namespace: {{ include "serializer.name" $ }}
+data:
+  LANG: en_US.UTF-8
+  RACK_ENV: production
+  RAILS_ENV: production
+  RAILS_SERVE_STATIC_FILES: enabled
+  DB_POOL: "1"

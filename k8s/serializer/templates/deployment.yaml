@@ -1,0 +1,164 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: consul-template
+  namespace: serializer
+data:
+  config.hcl: |
+    {{`
+    template {
+      error_on_missing_key = true
+      contents = <<EOH
+        {{- with secret "secret/serializer/main" -}}
+    DATABASE_URL={{ .Data.DATABASE_URL }}
+    SECRET_KEY_BASE={{ .Data.SECRET_KEY_BASE }}
+    SECRET_TOKEN={{ .Data.SECRET_TOKEN }}
+        {{- end -}}
+      EOH
+      destination = "/etc/secrets/env"
+    }`}}
+---
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: serializer-budget
+  labels:
+    app: {{ include "serializer.name" $ }}
+  namespace: {{ include "serializer.name" $ }}
+spec:
+  selector:
+    matchLabels:
+      app: serializer
+  maxUnavailable: 1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: serializer
+  labels:
+    app: {{ include "serializer.name" $ }}
+  namespace: {{ include "serializer.name" $ }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: serializer
+  template:
+    metadata:
+      labels:
+        app: serializer
+    spec:
+      initContainers:
+      - name: vault-authenticator
+        image: registry.hub.docker.com/sethvargo/vault-kubernetes-authenticator:0.1.0
+        volumeMounts:
+        - name: vault-token
+          mountPath: /home/vault
+        env:
+        - name: TOKEN_DEST_PATH
+          value: /home/vault/.vault-token
+        - name: VAULT_ADDR
+          value: "http://vs-vault.vault:8200"
+        - name: VAULT_ROLE
+          value: serializer
+      - name: consul-template
+        image: registry.hub.docker.com/hashicorp/consul-template:0.19.5-scratch
+        command:
+        - /consul-template
+        - -config
+        - /etc/consul-template/config.hcl
+        - -log-level
+        - debug
+        - -once
+        volumeMounts:
+        - name: secrets
+          mountPath: /etc/secrets
+        - name: vault-token
+          mountPath: /home/vault
+        - name: consul-template-config
+          mountPath: /etc/consul-template
+        env:
+        - name: HOME
+          value: /home/vault
+        - name: VAULT_ADDR
+          value: "http://vs-vault.vault:8200"
+        - name: VAULT_SKIP_VERIFY
+          value: "true"
+      - name: volume-init
+        image: {{ .Values.images.rails }}
+        command:
+        - bash
+        - -c
+        - "mv /app/* /shared"
+        volumeMounts:
+        - mountPath: /shared
+          name: shared-app-dir
+      - name: rails-init
+        image: {{ .Values.images.rails }}
+        command:
+        - rails
+        - db:migrate
+        envFrom:
+        - configMapRef:
+            name: serializer-config
+        volumeMounts:
+        - mountPath: /etc/rails/
+          name: secrets
+      containers:
+      - name: graph-rebuilder
+        image: {{ .Values.images.rails }}
+        command:
+        - /app/hack/repeat.sh
+        env:
+        - name: INTERVAL
+          value: "3600"
+        - name: COMMAND
+          value: rake save_graph
+        envFrom:
+        - configMapRef:
+            name: serializer-config
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "200Mi"
+          requests:
+            cpu: "100m"
+            memory: "100Mi"
+        volumeMounts:
+        - mountPath: /app
+          name: shared-app-dir
+        - mountPath: /etc/rails/
+          name: secrets
+      - name: web
+        image: {{ .Values.images.rails }}
+        envFrom:
+        - configMapRef:
+            name: serializer-config
+        ports:
+        - name: web
+          containerPort: 3000
+        resources:
+          limits:
+            cpu: "750m"
+            memory: "200Mi"
+          requests:
+            cpu: "150m"
+            memory: "200Mi"
+        volumeMounts:
+        - mountPath: /app
+          name: shared-app-dir
+        - mountPath: /etc/rails/
+          name: secrets
+      volumes:
+      - name: shared-app-dir
+        emptyDir: {}
+      - name: secrets
+        emptyDir:
+          medium: Memory
+      - name: vault-token
+        emptyDir:
+          medium: Memory
+      - name: consul-template-config
+        configMap:
+          name: consul-template

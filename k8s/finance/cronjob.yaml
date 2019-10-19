@@ -1,0 +1,74 @@
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: config-map-creator
+  namespace: finance
+spec:
+  schedule: "* * * * *"
+  jobTemplate:
+    metadata:
+      labels:
+        cronjob: config-map-creator
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          serviceAccount: config-map-creator
+          volumes:
+          - name: secrets
+            emptyDir:
+              medium: Memory
+          - name: vault-token
+            emptyDir:
+              medium: Memory
+          - name: consul-template-config
+            configMap:
+              name: consul-template
+          initContainers:
+          - name: vault-authenticator
+            image: registry.hub.docker.com/sethvargo/vault-kubernetes-authenticator:0.1.0
+            volumeMounts:
+            - name: vault-token
+              mountPath: /home/vault
+            env:
+            - name: TOKEN_DEST_PATH
+              value: /home/vault/.vault-token
+            - name: VAULT_ADDR
+              value: "http://vs-vault.vault:8200"
+            - name: VAULT_ROLE
+              value: finance
+          - name: consul-template
+            image: registry.hub.docker.com/hashicorp/consul-template:0.19.5-scratch
+            command:
+            - /consul-template
+            - -config
+            - /etc/consul-template/config.hcl
+            - -log-level
+            - debug
+            - -once
+            volumeMounts:
+            - name: secrets
+              mountPath: /etc/data
+            - name: vault-token
+              mountPath: /home/vault
+            - name: consul-template-config
+              mountPath: /etc/consul-template
+            env:
+            - name: HOME
+              value: /home/vault
+            - name: VAULT_ADDR
+              value: "http://vs-vault.vault:8200"
+            - name: VAULT_SKIP_VERIFY
+              value: "true"
+          containers:
+          - name: create-config-map
+            image: gcr.io/google_containers/hyperkube:v1.15.5
+            command:
+            - /bin/sh
+            - -c
+            - |-
+              kubectl apply -f /etc/data/configmap.yaml
+            volumeMounts:
+            - name: secrets
+              mountPath: /etc/data

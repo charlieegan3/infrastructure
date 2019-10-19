@@ -1,0 +1,38 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ include "personal-website.name" $ }}
+  namespace: {{ include "personal-website.name" $ }}
+  labels:
+    app: {{ include "personal-website.name" $ }}
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      if ($host = 'www.charlieegan3.com' ) {
+        rewrite ^ https://charlieegan3.com$request_uri permanent;
+      }
+spec:
+  tls:
+  - hosts:
+    - charlieegan3.com
+    secretName: {{ include "personal-website.name" $ }}-tls
+  - hosts:
+    - www.charlieegan3.com
+    secretName: {{ include "personal-website.name" $ }}-www-tls
+  rules:
+  - host: charlieegan3.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ include "personal-website.name" $ }}
+          servicePort: web
+  - host: www.charlieegan3.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ include "personal-website.name" $ }}
+          servicePort: web

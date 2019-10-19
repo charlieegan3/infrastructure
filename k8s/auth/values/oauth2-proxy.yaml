@@ -1,0 +1,24 @@
+image:
+  repository: "quay.io/pusher/oauth2_proxy"
+  tag: "v3.2.0"
+  pullPolicy: "IfNotPresent"
+
+extraArgs:
+  provider: github
+  set-xauthrequest: "true"
+  cookie-domain: .charlieegan3.com
+  whitelist-domain: .charlieegan3.com
+  redirect-url: "https://auth.charlieegan3.com/oauth2/callback"
+
+ingress:
+  enabled: true
+  path: /
+  hosts:
+  - auth.charlieegan3.com
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    kubernetes.io/ingress.class: nginx
+  tls:
+  - secretName: auth-tls
+    hosts:
+    - auth.charlieegan3.com

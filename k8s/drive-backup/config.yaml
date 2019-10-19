@@ -1,0 +1,17 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: consul-template
+  namespace: drive-backup
+data:
+  config.hcl: |
+    template {
+      error_on_missing_key = true
+      contents = <<EOH
+        {{- with secret "secret/drive-backup/main" -}}
+        {{- .Data.text -}}
+        {{- end -}}
+      EOH
+      destination = "/etc/config/rclone/rclone.conf"
+    }

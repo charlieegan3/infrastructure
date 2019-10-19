@@ -1,0 +1,21 @@
+serviceAccount:
+  name: stackdriver-exporter
+  # created manually with an includes file
+  create: false
+resources:
+  limits:
+    cpu: "200m"
+    memory: "50Mi"
+  requests:
+    cpu: "50m"
+    memory: "50Mi"
+serviceMonitor:
+  enabled: true
+  interval: 12h
+  namespace: monitoring
+stackdriver:
+  projectId: charlieegan3-cluster
+  metrics:
+    interval: 12h
+    typePrefixes: "compute.googleapis.com,\
+                   storage.googleapis.com"

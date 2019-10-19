@@ -1,0 +1,13 @@
+images:
+  rails: charlieegan3/serializer:426f9a9b5106526d25d4aaf8b46af21b
+
+cronjobs:
+  - name: serializer-items-active
+    schedule: "*/10 * * * *"
+    command: collect_active
+  - name: serializer-items-feed
+    schedule: "15 * * * *"
+    command: collect_feeds
+  - name: serializer-clean-old-data
+    schedule: "45 * * * *"
+    command: clean_old_data

@@ -1,0 +1,38 @@
+images:
+  tracker: charlieegan3/music-play-tracker:1aa5afbfebb42dfb41917390830ec5e5
+  site: charlieegan3/music-hugo-rebuilder:74401262db95fa1112b76344858951c8
+
+cronjobs:
+  - name: sync-spotify
+    schedule: "*/15 * * * *"
+    command: spotify
+  - name: sync-youtube
+    schedule: "13,33,53 * * * *"
+    command: youtube
+  - name: sync-soundcloud
+    schedule: "13,33,53 * * * *"
+    command: soundcloud
+  - name: sync-shazam
+    schedule: "0 0,4,8,12,16,20 * * *"
+    command: shazam
+
+  - name: enrich
+    schedule: "*/5 * * * *"
+    command: enrich
+
+  - name: summary-top
+    schedule: "0 * * * *"
+    command: summary
+  - name: summary-recent
+    schedule: "*/10 * * * *"
+    command: summary_recent
+  - name: summary-tracks
+    schedule: "0 4 * * 2,4,6"
+    command: summary_tracks
+  - name: summary-month
+    schedule: "0 4 * * 1,3,5"
+    command: summary_months
+
+  - name: backup-plays
+    schedule: "0 4 * * *"
+    command: backup_plays_table

@@ -1,0 +1,27 @@
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/auth-url: "https://auth.charlieegan3.com/oauth2/auth"
+    nginx.ingress.kubernetes.io/auth-signin: "https://auth.charlieegan3.com/oauth2/start?rd=https://grafana.charlieegan3.com"
+  hosts:
+  - grafana.charlieegan3.com
+  tls:
+  - hosts:
+    - grafana.charlieegan3.com
+    secretName: grafana-tls
+sidecar:
+  dashboards:
+    enabled: true
+    searchNamespace: ALL
+  datasources:
+    enabled: true
+    searchNamespace: ALL
+grafana.ini:
+  auth.anonymous:
+    enabled: "true"
+adminUser: admin
+adminPassword: admin
+plugins:
+- simpod-json-datasource

@@ -1,0 +1,87 @@
+FROM alpine:3.7
+
+WORKDIR /build
+
+RUN apk add curl
+
+# install helm
+ENV VERSION=2.14.0 CHECKSUM=b5f6a1e642971af1363cadbe1f7f37c029c11dd93813151b521c0dbeacfbdaa9
+RUN curl -LO https://storage.googleapis.com/kubernetes-helm/helm-v${VERSION}-linux-amd64.tar.gz && \
+    echo "$CHECKSUM  helm-v$VERSION-linux-amd64.tar.gz" | sha256sum -c && \
+    tar -zxvf helm-v${VERSION}-linux-amd64.tar.gz && mv linux-amd64/helm /usr/local/bin/helm && \
+    helm init --client-only
+
+# fetch prometheus chart
+ENV CHART_VERSION=6.11.0
+RUN helm repo update && helm fetch stable/prometheus-operator --version=$CHART_VERSION && \
+    tar -zxf prometheus-operator-${CHART_VERSION}.tgz
+
+# fetch kube-state-metrics chart
+ENV CHART_VERSION=2.4.0
+RUN helm repo update && helm fetch stable/kube-state-metrics --version=$CHART_VERSION && \
+    tar -zxf kube-state-metrics-${CHART_VERSION}.tgz
+
+# fetch and extract grafana chart
+ENV CHART_VERSION=3.8.17
+RUN helm repo update && helm fetch stable/grafana --version=$CHART_VERSION && \
+    tar -zxf grafana-${CHART_VERSION}.tgz
+
+# fetch loki charts
+RUN helm repo add loki https://grafana.github.io/loki/charts
+ENV CHART_VERSION=0.15.0
+RUN helm repo update && helm fetch loki/loki --version=$CHART_VERSION && \
+    tar -zxf loki-${CHART_VERSION}.tgz
+ENV CHART_VERSION=0.12.2
+RUN helm repo update && helm fetch loki/promtail --version=$CHART_VERSION && \
+    tar -zxf promtail-${CHART_VERSION}.tgz
+
+# fetch and extract stackdriver exporter chart
+ENV CHART_VERSION=1.2.1
+RUN helm repo update && helm fetch stable/stackdriver-exporter --version=$CHART_VERSION && \
+    tar -zxf stackdriver-exporter-${CHART_VERSION}.tgz
+
+RUN mkdir /output
+COPY . .
+
+RUN cat includes/namespace.yaml > /output/0-namespace.yaml
+
+# render prometheus-operator
+RUN helm template --name=po \
+      --namespace=monitoring \
+      --values=values/prometheus-operator.yaml \
+      prometheus-operator > /output/prometheus.yaml
+RUN cat includes/prometheus/*.yaml >> /output/prometheus.yaml
+
+# render grafana chart
+RUN helm template --name=gf \
+      --namespace=monitoring \
+      --values=values/grafana.yaml \
+      grafana > /output/grafana.yaml
+RUN cat includes/grafana/*.yaml >> /output/grafana.yaml
+
+# render kube-state-metrics
+RUN helm template --name=ksm \
+      --namespace=monitoring \
+      --values=values/kube-state-metrics.yaml \
+      kube-state-metrics > /output/kube-state-metrics.yaml
+RUN cat includes/kube-state-metrics/*.yaml >> /output/kube-state-metrics.yaml
+
+# render loki
+RUN helm template --name=loki \
+      --namespace=monitoring \
+      --values=values/loki.yaml \
+      loki > /output/loki.yaml
+RUN helm template --name=promtail \
+      --namespace=monitoring \
+      --values=values/promtail.yaml \
+      promtail > /output/promtail.yaml
+
+# render stackdriver-exporter
+RUN helm template --name=stkexp \
+      --namespace=monitoring \
+      --values=values/stackdriver-exporter.yaml \
+      stackdriver-exporter > /output/stackdriver-exporter.yaml
+RUN cat includes/stackdriver-exporter/*.yaml >> /output/stackdriver-exporter.yaml
+
+# 'render' cloud-billing-exporter
+RUN cat includes/cloud-billing-exporter/*.yaml >> /output/cloud-billing-exporter.yaml

@@ -1,0 +1,53 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app: promop-apiserver
+    chart: prometheus-operator-6.11.0
+  name: po-promop-apiserver
+  namespace: monitoring
+spec:
+  endpoints:
+  - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    port: https
+    scheme: https
+    tlsConfig:
+      caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      insecureSkipVerify: false
+      serverName: kubernetes
+    metricRelabelings:
+    # I don't have any alerts for these metrics so I'm not collecting to save
+    # space
+    - sourceLabels:
+      - "__name__"
+      regex: apiserver_request_duration_seconds_bucket
+      action: drop
+    - sourceLabels:
+      - "__name__"
+      regex: apiserver_response_sizes_bucket
+      action: drop
+    - sourceLabels:
+      - "__name__"
+      regex: apiserver_request_total
+      action: drop
+    - sourceLabels:
+      - "__name__"
+      regex: apiserver_request_duration_seconds_sum
+      action: drop
+    - sourceLabels:
+      - "__name__"
+      regex: apiserver_request_latencies_sum
+      action: drop
+    - sourceLabels:
+      - "__name__"
+      regex: apiserver_request_latencies_count
+      action: drop
+  jobLabel: component
+  namespaceSelector:
+    matchNames:
+    - default
+  selector:
+    matchLabels:
+      component: apiserver
+      provider: kubernetes

@@ -1,0 +1,18 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: consul-template
+  namespace: music
+data:
+  config.hcl: |
+    {{`
+    template {
+      error_on_missing_key = true
+      contents = <<EOH
+        {{- with secret "secret/music/main" -}}
+    {{ .Data.text -}}
+        {{- end -}}
+      EOH
+      destination = "/etc/config/env"
+    }`}}

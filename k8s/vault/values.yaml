@@ -1,0 +1,36 @@
+server:
+  serviceaccount:
+    annotations:
+      iam.gke.io/gcp-service-account: "vault-server@charlieegan3-cluster.iam.gserviceaccount.com"
+  dataStorage:
+    enabled: false
+  authDelegator:
+    enabled: true
+  resources:
+    requests:
+      memory: 150Mi
+      cpu: 200m
+    limits:
+      memory: 150Mi
+      cpu: 200m
+  standalone:
+    config: |-
+      ui = false
+
+      listener "tcp" {
+        tls_disable = 1
+        address = "[::]:8200"
+        cluster_address = "[::]:8201"
+      }
+
+      storage "gcs" {
+        bucket     = "charlieegan3-cluster-vault-storage"
+        ha_enabled = "false"
+      }
+
+      seal "gcpckms" {
+        project     = "charlieegan3-cluster"
+        region      = "global"
+        key_ring    = "vault-key-ring"
+        crypto_key  = "vault-server"
+      }

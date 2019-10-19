@@ -1,0 +1,15 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: app-serializer
+spec:
+  groups:
+  - name: app-serializer
+    rules:
+    - alert: SerializerRPS
+      annotations:
+        message: 6x higher RPS on serializer (normally 0.5 per second)
+      expr: |-
+        sum(rate(http_server_requests_total{job="serializer"}[5m])) > 3
+      for: 10m

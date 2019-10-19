@@ -1,0 +1,87 @@
+nameOverride: promop
+fullNameOverride: promop
+
+defaultRules:
+  rules:
+    # these have all been disabled and included manually becuase they make
+    # assumptions that do not hold about metric labels from ksm
+    kubernetesResources: false
+    node: true
+
+prometheus:
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+      nginx.ingress.kubernetes.io/auth-url: "https://auth.charlieegan3.com/oauth2/auth"
+      nginx.ingress.kubernetes.io/auth-signin: "https://auth.charlieegan3.com/oauth2/start?rd=https://prometheus.charlieegan3.com"
+    hosts:
+    - prometheus.charlieegan3.com
+    tls:
+    - hosts:
+      - prometheus.charlieegan3.com
+      secretName: prometheus-tls
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+    externalUrl: ""
+    ruleSelector:
+      matchLabels: {}
+    retention: 24h
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          resources:
+            requests:
+              storage: 3Gi
+
+alertmanager:
+  alertmanagerSpec:
+    useExistingSecret: true
+    externalUrl: https://alertmanager.charlieegan3.com
+    storage:
+      volumeClaimTemplate:
+        spec:
+          resources:
+            requests:
+              storage: 1Gi
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+      nginx.ingress.kubernetes.io/auth-url: "https://auth.charlieegan3.com/oauth2/auth"
+      nginx.ingress.kubernetes.io/auth-signin: "https://auth.charlieegan3.com/oauth2/start?rd=https://alertmanager.charlieegan3.com"
+    hosts:
+    - alertmanager.charlieegan3.com
+    tls:
+    - hosts:
+      - alertmanager.charlieegan3.com
+      secretName: alertmanager-tls
+
+prometheusOperator:
+  kubeletService:
+    namespace: monitoring
+kubelet:
+  namespace: monitoring
+  serviceMonitor:
+    # https://github.com/coreos/prometheus-operator/issues/926
+    https: false
+
+kubeDns:
+  enabled: true
+
+grafana:
+  enabled: false
+kubeApiServer:
+  enabled: false
+kubeStateMetrics:
+  enabled: false
+kubeEtcd:
+  enabled: false
+kubeControllerManager:
+  enabled: false
+kubeScheduler:
+  enabled: false
+coreDns:
+  enabled: false

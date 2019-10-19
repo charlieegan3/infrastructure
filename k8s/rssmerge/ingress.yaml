@@ -1,0 +1,24 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: rssmerge
+  namespace: rssmerge
+  labels:
+    app: rssmerge
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    kubernetes.io/ingress.class: nginx
+spec:
+  tls:
+  - hosts:
+    - rssmerge.charlieegan3.com
+    secretName: rssmerge-tls
+  rules:
+  - host: rssmerge.charlieegan3.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: rssmerge
+          servicePort: 80

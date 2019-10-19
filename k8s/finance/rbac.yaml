@@ -1,0 +1,30 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: config-map-creator
+  namespace: finance
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: configmap-creator
+  namespace: finance
+rules:
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["create", "update", "get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: create-configmaps
+  namespace: finance
+subjects:
+- kind: ServiceAccount
+  name: config-map-creator
+  namespace: finance
+roleRef:
+  kind: Role
+  name: configmap-creator
+  apiGroup: rbac.authorization.k8s.io

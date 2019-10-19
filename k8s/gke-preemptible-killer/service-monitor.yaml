@@ -1,0 +1,16 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: gke-preemptible-killer
+  namespace: gke-preemptible-killer
+spec:
+  endpoints:
+  - interval: 30s
+    port: metrics
+  namespaceSelector:
+    matchNames:
+    - gke-preemptible-killer
+  selector:
+    matchLabels:
+      app: gke-preemptible-killer

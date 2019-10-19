@@ -1,0 +1,38 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: serializer
+  namespace: {{ include "serializer.name" $ }}
+  labels:
+    app: serializer
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      if ($host = 'serializer.charlieegan3.com' ) {
+        rewrite ^ https://serializer.io$request_uri permanent;
+      }
+spec:
+  tls:
+  - hosts:
+    - serializer.charlieegan3.com
+    secretName: serializer-tls
+  - hosts:
+    - serializer.io
+    secretName: serializer-io-tls
+  rules:
+  - host: serializer.charlieegan3.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: serializer
+          servicePort: web
+  - host: serializer.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: serializer
+          servicePort: web

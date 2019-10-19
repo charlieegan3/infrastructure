@@ -1,0 +1,20 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasource-prometheus
+  labels:
+    grafana_datasource: "1"
+  namespace: monitoring
+data:
+  datasource-prometheus.yaml: |-
+    apiVersion: 1
+    deleteDatasources:
+    - name: Prometheus
+      orgId: 1
+    datasources:
+    - name: Prometheus
+      type: prometheus
+      access: proxy
+      url: http://po-promop-prometheus:9090
+      isDefault: true

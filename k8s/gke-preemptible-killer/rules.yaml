@@ -1,0 +1,15 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: gke-preemptible-killer
+  namespace: gke-preemptible-killer
+spec:
+  groups:
+  - name: gke-preemptible-killer
+    rules:
+    - alert: GKEPreemptibleKillerNodeFailure
+      annotations:
+        message: gke-preemptible-killer has failed to process a node
+      expr: rate(estafette_gke_preemptible_killer_node_totals{status="failed"}[5m]) > 0
+      for: 10m

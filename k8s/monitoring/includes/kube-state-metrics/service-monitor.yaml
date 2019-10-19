@@ -1,0 +1,14 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: ksm-kube-state-metrics
+  namespace: monitoring
+spec:
+  endpoints:
+  - port: http
+    honorLabels: true
+  jobLabel: app.kubernetes.io/name
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kube-state-metrics

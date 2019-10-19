@@ -1,0 +1,15 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: gcp-spend
+spec:
+  groups:
+  - name: gcp-spend
+    rules:
+    - alert: GCPSpendBudget
+      annotations:
+        message: Predicted spend in month is greater than £35
+      expr: |-
+        (sum(cloud_billing_monthly_costs) / day_of_month()) * days_in_month() > 35
+      for: 5m
