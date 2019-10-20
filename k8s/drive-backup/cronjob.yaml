@@ -9,6 +9,9 @@ spec:
   schedule: "33 * * * *"
   successfulJobsHistoryLimit: 1
   jobTemplate:
+    metadata:
+      labels:
+        cronjob: drive-backup
     spec:
       template:
         spec:
