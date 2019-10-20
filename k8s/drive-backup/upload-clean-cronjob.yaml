@@ -1,0 +1,81 @@
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: upload-clean
+  namespace: drive-backup
+spec:
+  concurrencyPolicy: Forbid
+  schedule: "33 * * * *"
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    metadata:
+      labels:
+        cronjob: upload-clean
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          volumes:
+          - name: secrets
+            emptyDir:
+              medium: Memory
+          - name: vault-token
+            emptyDir:
+              medium: Memory
+          - name: consul-template-config
+            configMap:
+              name: consul-template
+          initContainers:
+          - name: vault-authenticator
+            image: registry.hub.docker.com/sethvargo/vault-kubernetes-authenticator:0.1.0
+            volumeMounts:
+            - name: vault-token
+              mountPath: /home/vault
+            env:
+            - name: TOKEN_DEST_PATH
+              value: /home/vault/.vault-token
+            - name: VAULT_ADDR
+              value: "http://vs-vault.vault:8200"
+            - name: VAULT_ROLE
+              value: drive-backup
+          - name: consul-template
+            image: registry.hub.docker.com/hashicorp/consul-template:0.19.5-scratch
+            command:
+            - /consul-template
+            - -config
+            - /etc/consul-template/config.hcl
+            - -log-level
+            - debug
+            - -once
+            volumeMounts:
+            - name: secrets
+              mountPath: /etc/config
+            - name: vault-token
+              mountPath: /home/vault
+            - name: consul-template-config
+              mountPath: /etc/consul-template
+            env:
+            - name: HOME
+              value: /home/vault
+            - name: VAULT_ADDR
+              value: "http://vs-vault.vault:8200"
+            - name: VAULT_SKIP_VERIFY
+              value: "true"
+          containers:
+          - name: backup
+            image: rclone/rclone:1.49.5
+            args:
+            - cleanup
+            - bb:charlieegan3-drive-backup/Upload/
+            - "-P"
+            volumeMounts:
+            - name: secrets
+              mountPath: /root/.config
+            resources:
+              requests:
+                memory: "100Mi"
+                cpu: "100m"
+              limits:
+                memory: "1Gi"
+                cpu: "500m"
