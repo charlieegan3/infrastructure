@@ -21,6 +21,7 @@ sidecar:
 grafana.ini:
   auth.anonymous:
     enabled: "true"
+    org_role: "Admin"
 adminUser: admin
 adminPassword: admin
 plugins:
