@@ -1,9 +1,41 @@
+global:
+  defaultResources:
+    requests:
+      cpu: 10m
+      memory: 10Mi
+  proxy:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 10Mi
+
+pilot:
+  autoscaleMin: 1
+  autoscaleMax: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 100Mi
+
 prometheus:
   enabled: false
+
+mixer:
+  policy:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 10Mi
+  telemetry:
+    enabled: false
 
 gateways:
   istio-ingressgateway:
     type: ClusterIP
+    resources:
+      requests:
+        cpu: 50m
+        memory: 100Mi
     ports: # these have had the node ports and bonus ports disabled
     - port: 15020
       targetPort: 15020

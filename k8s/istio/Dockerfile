@@ -25,13 +25,14 @@ RUN mv istio/install/kubernetes/helm/istio-init chart-init
 RUN mv istio/install/kubernetes/helm/istio chart-istio
 
 RUN mkdir /output
-COPY . .
 
-RUN cat manifests/namespaces.yaml >> /output/init.yaml
+COPY manifests/namespaces.yaml /output/init.yaml
 
 RUN helm template chart-init \
     --name=init \
     --namespace=istio-system >> /output/init.yaml
+
+COPY values.yaml values.yaml
 
 RUN helm template chart-istio \
     --name=istio \
