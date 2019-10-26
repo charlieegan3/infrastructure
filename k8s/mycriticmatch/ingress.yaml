@@ -3,12 +3,12 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: mycriticmatch
-  namespace: mycriticmatch
-  labels:
-    app: mycriticmatch
+  # TODO: use proxy or istio ingress controller
+  namespace: istio-system
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
     kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/upstream-vhost: mycriticmatch.mycriticmatch.charlieegan3.com
 spec:
   tls:
   - hosts:
@@ -20,5 +20,5 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: mycriticmatch
+          serviceName: istio-ingressgateway
           servicePort: 80

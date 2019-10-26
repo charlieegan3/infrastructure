@@ -1,0 +1,10 @@
+---
+kind: ConfigMap
+metadata:
+  labels:
+    serving.knative.dev/release: "v0.9.0"
+  name: config-domain
+  namespace: knative-serving
+apiVersion: v1
+data:
+  charlieegan3.com: ""
