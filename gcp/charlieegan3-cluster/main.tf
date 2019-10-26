@@ -56,6 +56,5 @@ resource "google_project_services" "default" {
 }
 
 variable "cluster_version" {
-  # use gke.2 until the metadata server is fixed
-  default = "1.14.6-gke.2"
+  default = "1.14"
 }
