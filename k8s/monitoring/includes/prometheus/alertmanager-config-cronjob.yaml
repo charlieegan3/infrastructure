@@ -5,6 +5,7 @@ metadata:
   name: alertmanager-config-creator
   namespace: monitoring
 spec:
+  concurrencyPolicy: Forbid
   schedule: "* * * * *"
   successfulJobsHistoryLimit: 1
   jobTemplate:
