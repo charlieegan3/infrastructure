@@ -35,6 +35,10 @@ resource "google_container_cluster" "main" {
     http_load_balancing {
       disabled = true
     }
+
+    istio_config {
+      disabled = true
+    }
   }
 
   resource_usage_export_config {
