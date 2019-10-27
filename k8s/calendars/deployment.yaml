@@ -77,7 +77,7 @@ spec:
           value: "true"
       containers:
       - name: calendars
-        image: charlieegan3/calendars:82138f774221d8f9cae1c3e95419dc38
+        image: charlieegan3/calendars:293d5e00af617205451a44b154bbe9ea
         volumeMounts:
         - name: secrets
           mountPath: /etc/secrets
