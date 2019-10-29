@@ -51,8 +51,8 @@ spec:
             cpu: 100m
             memory: 128Mi
           requests:
-            cpu: 100m
-            memory: 128Mi
+            cpu: 10m
+            memory: 10Mi
         volumeMounts:
         - mountPath: /etc/google
           name: shared-data

@@ -493,6 +493,11 @@ data:
               "expr": "sum(kube_pod_container_resource_limits_memory_bytes{namespace!=\"kube-system\"})",
               "legendFormat": "limits",
               "refId": "C"
+            },
+            {
+              "expr": "sum(kube_node_status_allocatable_memory_bytes)",
+              "legendFormat": "allocatable",
+              "refId": "D"
             }
           ],
           "thresholds": [],
@@ -537,7 +542,7 @@ data:
           }
         }
       ],
-      "refresh": "1m",
+      "refresh": "10s",
       "schemaVersion": 19,
       "style": "dark",
       "tags": [],
@@ -576,5 +581,5 @@ data:
       "timezone": "",
       "title": "Kubernetes",
       "uid": "rDANddPNIZz",
-      "version": 3
+      "version": 1
     }

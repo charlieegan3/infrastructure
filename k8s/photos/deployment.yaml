@@ -40,8 +40,8 @@ spec:
           name: shared-data
         resources:
           requests:
-            memory: "100Mi"
-            cpu: "100m"
+            memory: "10Mi"
+            cpu: "10m"
           limits:
             memory: "100Mi"
             cpu: "200m"
@@ -64,8 +64,8 @@ spec:
             cpu: "2"
             memory: "500Mi"
           requests:
-            cpu: "100m"
-            memory: "300Mi"
+            cpu: "10m"
+            memory: "20Mi"
       volumes:
       - name: shared-data
         emptyDir: {}

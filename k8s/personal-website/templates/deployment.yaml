@@ -105,8 +105,8 @@ spec:
             cpu: "200m"
             memory: "50Mi"
           requests:
-            cpu: "50m"
-            memory: "50Mi"
+            cpu: "10m"
+            memory: "10Mi"
         volumeMounts:
         - mountPath: /shared
           name: shared-app-dir
@@ -125,8 +125,8 @@ spec:
             cpu: "100m"
             memory: "100Mi"
           requests:
-            cpu: "100m"
-            memory: "100Mi"
+            cpu: "10m"
+            memory: "10Mi"
         volumeMounts:
         - mountPath: /usr/share/nginx/html
           name: shared-app-dir

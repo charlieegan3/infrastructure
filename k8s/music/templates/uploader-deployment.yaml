@@ -82,8 +82,8 @@ spec:
           name: shared-data
         resources:
           requests:
-            memory: "100Mi"
-            cpu: "100m"
+            memory: "10Mi"
+            cpu: "10m"
           limits:
             memory: "100Mi"
             cpu: "100m"

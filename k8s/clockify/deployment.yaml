@@ -104,6 +104,8 @@ spec:
           name: html-dir
         resources:
           limits:
-            cpu: "20m"
+            cpu: "50m"
+            memory: "20Mi"
           requests:
-            cpu: "20m"
+            cpu: "10m"
+            memory: "10Mi"
