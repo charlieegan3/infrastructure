@@ -26,15 +26,6 @@ ENV CHART_VERSION=3.8.17
 RUN helm repo update && helm fetch stable/grafana --version=$CHART_VERSION && \
     tar -zxf grafana-${CHART_VERSION}.tgz
 
-# fetch loki charts
-RUN helm repo add loki https://grafana.github.io/loki/charts
-ENV CHART_VERSION=0.15.0
-RUN helm repo update && helm fetch loki/loki --version=$CHART_VERSION && \
-    tar -zxf loki-${CHART_VERSION}.tgz
-ENV CHART_VERSION=0.12.2
-RUN helm repo update && helm fetch loki/promtail --version=$CHART_VERSION && \
-    tar -zxf promtail-${CHART_VERSION}.tgz
-
 # fetch and extract stackdriver exporter chart
 ENV CHART_VERSION=1.2.1
 RUN helm repo update && helm fetch stable/stackdriver-exporter --version=$CHART_VERSION && \
@@ -65,16 +56,6 @@ RUN helm template --name=ksm \
       --values=values/kube-state-metrics.yaml \
       kube-state-metrics > /output/kube-state-metrics.yaml
 RUN cat includes/kube-state-metrics/*.yaml >> /output/kube-state-metrics.yaml
-
-# render loki
-RUN helm template --name=loki \
-      --namespace=monitoring \
-      --values=values/loki.yaml \
-      loki > /output/loki.yaml
-RUN helm template --name=promtail \
-      --namespace=monitoring \
-      --values=values/promtail.yaml \
-      promtail > /output/promtail.yaml
 
 # render stackdriver-exporter
 RUN helm template --name=stkexp \
