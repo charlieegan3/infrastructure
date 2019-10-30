@@ -1,6 +1,6 @@
 vault:
   address: http://vs-vault.vault:8200
-  namespaces: calendars
+  namespaces: calendars,clockify
   authMethod: kubernetes
 resources:
   requests:

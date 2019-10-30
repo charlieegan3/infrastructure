@@ -1,16 +1,33 @@
-apiVersion: v1
+---
+apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
-  labels:
-    app: clockify
   name: clockify
   namespace: clockify
 spec:
-  ports:
-  - port: 80
-    protocol: TCP
-    targetPort: http
-  selector:
-    app: clockify
-  sessionAffinity: None
-  type: ClusterIP
+  template:
+    spec:
+      volumes:
+      - name: config
+        secret:
+          secretName: config
+      containers:
+      - image: "docker.io/charlieegan3/clockify:43187822520e98bee041f9c03b7ebce7"
+        ports:
+        - name: http1
+          containerPort: 80
+        volumeMounts:
+        - name: config
+          mountPath: /usr/share/nginx/html/data
+        resources:
+          limits:
+            cpu: "20m"
+            memory: "20Mi"
+          requests:
+            cpu: "10m"
+            memory: "10Mi"
+        command:
+        - sh
+        - -c
+        - |
+          mkdir -p /var/log/nginx && exec nginx -g "daemon off;"

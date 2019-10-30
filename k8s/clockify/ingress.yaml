@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: clockify
-  namespace: clockify
+  namespace: istio-system
   labels:
     app: clockify
   annotations:
@@ -10,6 +10,7 @@ metadata:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/auth-url: "https://auth.charlieegan3.com/oauth2/auth"
     nginx.ingress.kubernetes.io/auth-signin: "https://auth.charlieegan3.com/oauth2/start?rd=https://clockify.charlieegan3.com"
+    nginx.ingress.kubernetes.io/upstream-vhost: clockify.clockify.charlieegan3.com
 spec:
   tls:
   - hosts:
@@ -21,5 +22,5 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: clockify
+          serviceName: istio-ingressgateway
           servicePort: 80
