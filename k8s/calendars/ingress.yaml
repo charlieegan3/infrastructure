@@ -3,12 +3,13 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: calendars
-  namespace: calendars
+  namespace: istio-system
   labels:
     app: calendars
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
     kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/upstream-vhost: calendars.calendars.charlieegan3.com
 spec:
   tls:
   - hosts:
@@ -20,5 +21,5 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: calendars
-          servicePort: 8080
+          serviceName: istio-ingressgateway
+          servicePort: 80

@@ -1,17 +1,31 @@
 ---
-apiVersion: v1
+apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
   name: calendars
-  labels:
-    app: calendars
   namespace: calendars
 spec:
-  type: ClusterIP
-  selector:
-    app: calendars
-  ports:
-  - name: http
-    protocol: TCP
-    port: 8080
-    targetPort: http
+  template:
+    spec:
+      volumes:
+      - name: calendar-url
+        secret:
+          secretName: calendar-url
+      containers:
+      - image: "docker.io/charlieegan3/calendars:293d5e00af617205451a44b154bbe9ea"
+        ports:
+        - name: http1
+          containerPort: 8080
+        env:
+        - name: CALENDAR_URL_PATH
+          value: /etc/secrets/url
+        volumeMounts:
+        - name: calendar-url
+          mountPath: /etc/secrets
+        resources:
+          limits:
+            cpu: "20m"
+            memory: "20Mi"
+          requests:
+            cpu: "10m"
+            memory: "10Mi"
