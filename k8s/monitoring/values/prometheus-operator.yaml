@@ -34,6 +34,7 @@ prometheus:
           resources:
             requests:
               storage: 3Gi
+    additionalScrapeConfigsExternal: true
 
 alertmanager:
   alertmanagerSpec:
