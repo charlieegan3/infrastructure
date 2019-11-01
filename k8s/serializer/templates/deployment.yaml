@@ -19,19 +19,6 @@ data:
       destination = "/etc/secrets/env"
     }`}}
 ---
-apiVersion: policy/v1beta1
-kind: PodDisruptionBudget
-metadata:
-  name: serializer-budget
-  labels:
-    app: {{ include "serializer.name" $ }}
-  namespace: {{ include "serializer.name" $ }}
-spec:
-  selector:
-    matchLabels:
-      app: serializer
-  maxUnavailable: 1
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:

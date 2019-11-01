@@ -1,4 +1,6 @@
 global:
+  defaultPodDisruptionBudget:
+    enabled: false
   defaultResources:
     requests:
       cpu: 10m
