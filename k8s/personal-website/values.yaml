@@ -1,3 +1,3 @@
 images:
-  web: quay.io/charlieegan3/personal-website:220a76ee4e5a8d4529c069b916e7b3ff
+  web: charlieegan3/personal-website:a00c455de12e95a83b603ca14fe2e48e
   json: charlieegan3/json-charlieegan3:54c92961ab1155ae40378a0ab7370b68
