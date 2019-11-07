@@ -49,6 +49,8 @@ mixer:
         memory: 10Mi
   telemetry:
     enabled: true
+    autoscaleEnabled: false
+    replicaCount: 1
 
 gateways:
   istio-ingressgateway:
