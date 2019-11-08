@@ -28,6 +28,8 @@ prometheus:
     ruleSelector:
       matchLabels: {}
     retention: 24h
+    image:
+      tag: v2.14.0-rc.0
     storageSpec:
       volumeClaimTemplate:
         spec:
@@ -71,6 +73,9 @@ kubelet:
 
 kubeDns:
   enabled: true
+  service:
+    selector:
+      k8s-app: kube-dns
 
 grafana:
   enabled: false
