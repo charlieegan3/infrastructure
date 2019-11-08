@@ -51,6 +51,10 @@ mixer:
     enabled: true
     autoscaleEnabled: false
     replicaCount: 1
+    resources:
+      requests:
+        cpu: 10m
+        memory: 10m
 
 gateways:
   istio-ingressgateway:
