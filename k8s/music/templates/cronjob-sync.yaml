@@ -17,11 +17,10 @@ spec:
       labels:
         cronjob: "{{ $job.name }}"
     spec:
-      backoffLimit: 2
       template:
         spec:
           serviceAccount: music-sync
-          restartPolicy: Never
+          restartPolicy: OnFailure
           volumes:
           - name: shared-data
             emptyDir:

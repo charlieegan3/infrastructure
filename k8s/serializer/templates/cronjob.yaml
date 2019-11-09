@@ -14,10 +14,9 @@ spec:
       labels:
         cronjob: "{{ $job.name }}"
     spec:
-      backoffLimit: 1
       template:
         spec:
-          restartPolicy: Never
+          restartPolicy: OnFailure
           initContainers:
           - name: vault-authenticator
             image: registry.hub.docker.com/sethvargo/vault-kubernetes-authenticator:0.1.0

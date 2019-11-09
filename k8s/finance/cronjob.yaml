@@ -12,7 +12,6 @@ spec:
       labels:
         cronjob: config-map-creator
     spec:
-      backoffLimit: 1
       template:
         spec:
           restartPolicy: Never
