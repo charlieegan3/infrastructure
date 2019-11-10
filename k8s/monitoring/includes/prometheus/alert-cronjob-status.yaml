@@ -32,7 +32,7 @@ spec:
         1)
         * ON(job_name) GROUP_LEFT()
         label_replace(
-          kube_job_status_failed
+          sum(kube_job_failed) by (job_name)
           *
           ON(job_name) GROUP_RIGHT()
             kube_job_labels{label_cronjob!=""},
