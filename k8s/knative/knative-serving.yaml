@@ -698,7 +698,8 @@ metadata:
   name: activator
   namespace: knative-serving
 spec:
-  maxReplicas: 20
+  # TODO manual change
+  maxReplicas: 2
   metrics:
   - resource:
       name: cpu
