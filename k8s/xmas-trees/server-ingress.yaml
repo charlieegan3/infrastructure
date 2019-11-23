@@ -19,7 +19,7 @@ spec:
   - host: server.xmas-trees.charlieegan3.com
     http:
       paths:
-      - path: /
+      - path: /v0/data/tree/main/validate
         backend:
           serviceName: istio-ingressgateway
           servicePort: 80
