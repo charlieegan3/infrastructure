@@ -26,6 +26,7 @@ resource "google_project_services" "default" {
 
   services = [
     "bigquery-json.googleapis.com",
+    "bigquerystorage.googleapis.com",
     "cloudapis.googleapis.com",
     "cloudbuild.googleapis.com",
     "clouddebugger.googleapis.com",
@@ -38,6 +39,7 @@ resource "google_project_services" "default" {
     "datastore.googleapis.com",
     "deploymentmanager.googleapis.com",
     "drive.googleapis.com",
+    "iam.googleapis.com",
     "iamcredentials.googleapis.com",
     "logging.googleapis.com",
     "monitoring.googleapis.com",
@@ -47,6 +49,7 @@ resource "google_project_services" "default" {
     "replicapoolupdater.googleapis.com",
     "resourceviews.googleapis.com",
     "servicemanagement.googleapis.com",
+    "serviceusage.googleapis.com",
     "sourcerepo.googleapis.com",
     "sql-component.googleapis.com",
     "stackdriver.googleapis.com",

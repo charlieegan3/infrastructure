@@ -21,10 +21,13 @@ resource "google_project_services" "project" {
   services = [
     "bigquery-json.googleapis.com",
     "bigquerydatatransfer.googleapis.com",
+    "bigquerystorage.googleapis.com",
     "cloudresourcemanager.googleapis.com",
     "compute.googleapis.com",
     "container.googleapis.com",
     "containerregistry.googleapis.com",
+    "iam.googleapis.com",
+    "iamcredentials.googleapis.com",
     "logging.googleapis.com",
     "monitoring.googleapis.com",
     "oslogin.googleapis.com",
