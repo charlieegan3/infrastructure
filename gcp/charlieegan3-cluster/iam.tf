@@ -19,12 +19,3 @@ resource "google_service_account_iam_binding" "stackdriver_exporter" {
 
   members = ["serviceAccount:charlieegan3-cluster.svc.id.goog[monitoring/stackdriver-exporter]"]
 }
-
-resource "google_service_account_key" "stackdriver_exporter" {
-  service_account_id = google_service_account.stackdriver_exporter.name
-}
-
-output "stackdriver_exporter_service_account_key" {
-  value = base64decode(google_service_account_key.stackdriver_exporter.private_key)
-}
-
