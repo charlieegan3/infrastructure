@@ -1,0 +1,22 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasource-bq
+  labels:
+    grafana_datasource: "1"
+  namespace: monitoring
+data:
+  datasource-bq.yaml: |-
+    apiVersion: 1
+    deleteDatasources:
+    - name: BigQuery
+      orgId: 1
+    datasources:
+    - name: BigQuery
+      type: doitintl-bigquery-datasource
+      access: proxy
+      jsonData:
+        authenticationType: gce
+        sendUsageData: true
+        defaultProject: charlieegan3-cluster

@@ -22,7 +22,7 @@ RUN helm repo update && helm fetch stable/kube-state-metrics --version=$CHART_VE
     tar -zxf kube-state-metrics-${CHART_VERSION}.tgz
 
 # fetch and extract grafana chart
-ENV CHART_VERSION=3.8.17
+ENV CHART_VERSION=3.11.1
 RUN helm repo update && helm fetch stable/grafana --version=$CHART_VERSION && \
     tar -zxf grafana-${CHART_VERSION}.tgz
 

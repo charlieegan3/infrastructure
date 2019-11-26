@@ -1,13 +1,13 @@
 provider "google" {
   project = "charlieegan3-config"
   region  = "europe-west2-a"
-  version = "2.10.0"
+  version = "2.20.0"
 }
 
 provider "google-beta" {
   project = "charlieegan3-config"
   region  = "europe-west2-a"
-  version = "2.10.0"
+  version = "2.20.0"
 }
 
 terraform {

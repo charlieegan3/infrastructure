@@ -37,6 +37,41 @@ resource "google_project_services" "project" {
   ]
 }
 
+resource "google_bigquery_dataset" "billing_export" {
+  dataset_id = "charlieegan3_billing_export"
+
+  lifecycle {
+    ignore_changes = [
+      access, # this needed to stop plan trashing on updating the access
+    ]
+  }
+
+  access {
+    role          = "roles/bigquery.dataViewer"
+    user_by_email = "bigquery-user-readonly@charlieegan3-cluster.iam.gserviceaccount.com"
+  }
+  access {
+    role          = "OWNER"
+    special_group = "projectOwners"
+  }
+  access {
+    role          = "OWNER"
+    user_by_email = "billing-export-bigquery@system.gserviceaccount.com"
+  }
+  access {
+    role          = "OWNER"
+    user_by_email = "c@egan.co"
+  }
+  access {
+    role          = "READER"
+    special_group = "projectReaders"
+  }
+  access {
+    role          = "WRITER"
+    special_group = "projectWriters"
+  }
+}
+
 resource "google_service_account" "cloud-billing-exporter" {
   account_id   = "cloud-billing-exporter"
   display_name = "cloud-billing-exporter"
