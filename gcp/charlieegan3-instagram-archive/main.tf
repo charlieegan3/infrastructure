@@ -15,17 +15,29 @@ resource "google_project" "default" {
   billing_account = var.billing_account
 }
 
-resource "google_project_services" "project" {
+resource "google_project_service" "compute" {
   project = var.project_id
-
-  services = [
-    "compute.googleapis.com",
-    "logging.googleapis.com",
-    "monitoring.googleapis.com",
-    "oslogin.googleapis.com",
-    "stackdriver.googleapis.com",
-    "storage-api.googleapis.com",
-  ]
+  service = "compute.googleapis.com"
+}
+resource "google_project_service" "logging" {
+  project = var.project_id
+  service = "logging.googleapis.com"
+}
+resource "google_project_service" "monitoring" {
+  project = var.project_id
+  service = "monitoring.googleapis.com"
+}
+resource "google_project_service" "oslogin" {
+  project = var.project_id
+  service = "oslogin.googleapis.com"
+}
+resource "google_project_service" "stackdriver" {
+  project = var.project_id
+  service = "stackdriver.googleapis.com"
+}
+resource "google_project_service" "storage-api" {
+  project = var.project_id
+  service = "storage-api.googleapis.com"
 }
 
 resource "google_service_account" "default" {

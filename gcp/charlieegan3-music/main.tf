@@ -15,26 +15,68 @@ resource "google_project" "charlieegan3-music" {
   billing_account = var.billing_account
 }
 
-resource "google_project_services" "project" {
+resource "google_project_service" "bigquery-json" {
   project = var.project_id
-
-  services = [
-    "bigquery-json.googleapis.com",
-    "bigquerydatatransfer.googleapis.com",
-    "bigquerystorage.googleapis.com",
-    "cloudresourcemanager.googleapis.com",
-    "compute.googleapis.com",
-    "container.googleapis.com",
-    "containerregistry.googleapis.com",
-    "iam.googleapis.com",
-    "iamcredentials.googleapis.com",
-    "logging.googleapis.com",
-    "monitoring.googleapis.com",
-    "oslogin.googleapis.com",
-    "pubsub.googleapis.com",
-    "stackdriver.googleapis.com",
-    "storage-api.googleapis.com",
-    "youtube.googleapis.com",
-  ]
+  service = "bigquery-json.googleapis.com"
+}
+resource "google_project_service" "bigquerydatatransfer" {
+  project = var.project_id
+  service = "bigquerydatatransfer.googleapis.com"
+}
+resource "google_project_service" "bigquerystorage" {
+  project = var.project_id
+  service = "bigquerystorage.googleapis.com"
+}
+resource "google_project_service" "cloudresourcemanager" {
+  project = var.project_id
+  service = "cloudresourcemanager.googleapis.com"
+}
+resource "google_project_service" "compute" {
+  project = var.project_id
+  service = "compute.googleapis.com"
+}
+resource "google_project_service" "container" {
+  project = var.project_id
+  service = "container.googleapis.com"
+}
+resource "google_project_service" "containerregistry" {
+  project = var.project_id
+  service = "containerregistry.googleapis.com"
+}
+resource "google_project_service" "iam" {
+  project = var.project_id
+  service = "iam.googleapis.com"
+}
+resource "google_project_service" "iamcredentials" {
+  project = var.project_id
+  service = "iamcredentials.googleapis.com"
+}
+resource "google_project_service" "logging" {
+  project = var.project_id
+  service = "logging.googleapis.com"
+}
+resource "google_project_service" "monitoring" {
+  project = var.project_id
+  service = "monitoring.googleapis.com"
+}
+resource "google_project_service" "oslogin" {
+  project = var.project_id
+  service = "oslogin.googleapis.com"
+}
+resource "google_project_service" "pubsub" {
+  project = var.project_id
+  service = "pubsub.googleapis.com"
+}
+resource "google_project_service" "stackdriver" {
+  project = var.project_id
+  service = "stackdriver.googleapis.com"
+}
+resource "google_project_service" "storage-api" {
+  project = var.project_id
+  service = "storage-api.googleapis.com"
+}
+resource "google_project_service" "youtube" {
+  project = var.project_id
+  service = "youtube.googleapis.com"
 }
 

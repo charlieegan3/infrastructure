@@ -28,10 +28,6 @@ resource "google_container_cluster" "main" {
   }
 
   addons_config {
-    kubernetes_dashboard {
-      disabled = true
-    }
-
     http_load_balancing {
       disabled = true
     }
