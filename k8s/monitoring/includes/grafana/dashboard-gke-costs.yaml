@@ -26,8 +26,8 @@ data:
       "editable": true,
       "gnetId": null,
       "graphTooltip": 0,
-      "id": 1,
-      "iteration": 1574874529366,
+      "id": 5,
+      "iteration": 1574933148708,
       "links": [],
       "panels": [
         {
@@ -78,7 +78,7 @@ data:
               "group": [],
               "metricColumn": "none",
               "rawQuery": true,
-              "rawSql": "SELECT\n  TIMESTAMP_TRUNC(MAX(resource_usage.end_time), DAY) AS time,\n  SUM(resource_usage.usage.amount * gcp_billing_export.rate) AS cost\nFROM\n  `${project:regex}.cluster_usage.gke_cluster_resource_usage` AS resource_usage\nLEFT JOIN (\n  SELECT\n    sku.id AS sku_id,\n    SUM(cost) / SUM(usage.amount) AS rate,\n    MIN(usage_start_time) AS min_usage_start_time,\n    MAX(usage_end_time) AS max_usage_end_time\n  FROM\n    `charlieegan3-cluster.cluster_usage.billing_export3`\n  WHERE\n    project.id = \"${project:regex}\"\n    AND $__timeFilter(usage_end_time)\n  GROUP BY\n    sku_id) AS gcp_billing_export\nON\n  resource_usage.sku_id = gcp_billing_export.sku_id\nWHERE\n   resource_usage.start_time >= gcp_billing_export.min_usage_start_time\n  AND resource_usage.end_time <= gcp_billing_export.max_usage_end_time\n  AND REGEXP_CONTAINS(cluster_location, r\"^${cluster_location:regex}$\")\n  AND REGEXP_CONTAINS(cluster_name, r\"^${cluster_name:regex}$\")\n  AND REGEXP_CONTAINS(namespace, r\"^${namespace:regex}$\")\n  AND REGEXP_CONTAINS(resource_name, r\"^${resource_name:regex}$\")\n  AND REGEXP_CONTAINS(\n    COALESCE(\n      (SELECT value\n       FROM UNNEST(labels)\n       WHERE\n         key = \"app\" OR key = \"app.kubernetes.io/name\" OR key = \"serving.knative.dev/service\"\n       ORDER BY LENGTH(value)\n       LIMIT 1\n      ), \"Unknown\"\n    ), r\"^${app:regex}$\")\nGROUP BY\n  TIMESTAMP_TRUNC(resource_usage.end_time, DAY)\nORDER BY time\n",
+              "rawSql": "SELECT\n  TIMESTAMP_TRUNC(MAX(resource_usage.end_time), DAY) AS time,\n  SUM(resource_usage.usage.amount * gcp_billing_export.rate) AS cost\nFROM\n  `${project:regex}.$usage_table_path` AS resource_usage\nLEFT JOIN (\n  SELECT\n    sku.id AS sku_id,\n    SUM(cost) / SUM(usage.amount) AS rate,\n    MIN(usage_start_time) AS min_usage_start_time,\n    MAX(usage_end_time) AS max_usage_end_time\n  FROM\n    `$billing_export`\n  WHERE\n    project.id = \"$project\"\n    AND $__timeFilter(usage_end_time)\n  GROUP BY\n    sku_id) AS gcp_billing_export\nON\n  resource_usage.sku_id = gcp_billing_export.sku_id\nWHERE\n   resource_usage.start_time >= gcp_billing_export.min_usage_start_time\n  AND resource_usage.end_time <= gcp_billing_export.max_usage_end_time\n  AND REGEXP_CONTAINS(cluster_location, r\"^${cluster_location:regex}$\")\n  AND REGEXP_CONTAINS(cluster_name, r\"^${cluster_name:regex}$\")\n  AND REGEXP_CONTAINS(namespace, r\"^${namespace:regex}$\")\n  AND REGEXP_CONTAINS(resource_name, r\"^${resource_name:regex}$\")\n  AND REGEXP_CONTAINS(\n    COALESCE(\n      (SELECT value\n       FROM UNNEST(labels)\n       WHERE\n         key = \"app\" OR key = \"app.kubernetes.io/name\" OR key = \"serving.knative.dev/service\"\n       ORDER BY LENGTH(value)\n       LIMIT 1\n      ), \"Unknown\"\n    ), r\"^${app:regex}$\")\nGROUP BY\n  TIMESTAMP_TRUNC(resource_usage.end_time, DAY)\nORDER BY time\n",
               "refId": "A",
               "select": [
                 [
@@ -195,7 +195,7 @@ data:
               "group": [],
               "metricColumn": "none",
               "rawQuery": true,
-              "rawSql": "SELECT\n  namespace,\n  SUM(resource_usage.usage.amount * gcp_billing_export.rate) AS cost\nFROM\n  `charlieegan3-cluster.cluster_usage.gke_cluster_resource_usage` AS resource_usage\nLEFT JOIN (\n  SELECT\n    sku.id AS sku_id,\n    SUM(cost) / SUM(usage.amount) AS rate,\n    MIN(usage_start_time) AS min_usage_start_time,\n    MAX(usage_end_time) AS max_usage_end_time\n  FROM\n    `charlieegan3-cluster.cluster_usage.billing_export3`\n  WHERE\n    project.id = \"charlieegan3-cluster\"\n    AND $__timeFilter(usage_end_time)\n  GROUP BY\n    sku_id) AS gcp_billing_export\nON\n  resource_usage.sku_id = gcp_billing_export.sku_id\nWHERE\n  resource_usage.start_time >= gcp_billing_export.min_usage_start_time\n  AND resource_usage.end_time <= gcp_billing_export.max_usage_end_time\n  AND REGEXP_CONTAINS(cluster_location, r\"^${cluster_location:regex}$\")\n  AND REGEXP_CONTAINS(cluster_name, r\"^${cluster_name:regex}$\")\n  AND REGEXP_CONTAINS(namespace, r\"^${namespace:regex}$\")\n  AND REGEXP_CONTAINS(resource_name, r\"^${resource_name:regex}$\")\n  AND REGEXP_CONTAINS(\n    COALESCE(\n      (SELECT value\n       FROM UNNEST(labels)\n       WHERE\n         key = \"app\" OR key = \"app.kubernetes.io/name\" OR key = \"serving.knative.dev/service\"\n       ORDER BY LENGTH(value)\n       LIMIT 1\n      ), \"Unknown\"\n    ), r\"^${app:regex}$\")\nGROUP BY namespace\nORDER BY\n  REGEXP_CONTAINS(namespace, r\"kube.system\"),\n  cost desc\n\n\n",
+              "rawSql": "SELECT\n  namespace,\n  SUM(resource_usage.usage.amount * gcp_billing_export.rate) AS cost\nFROM\n  `$project.$usage_table_path` AS resource_usage\nLEFT JOIN (\n  SELECT\n    sku.id AS sku_id,\n    SUM(cost) / SUM(usage.amount) AS rate,\n    MIN(usage_start_time) AS min_usage_start_time,\n    MAX(usage_end_time) AS max_usage_end_time\n  FROM\n    `$billing_export`\n  WHERE\n    project.id = \"$project\"\n    AND $__timeFilter(usage_end_time)\n  GROUP BY\n    sku_id) AS gcp_billing_export\nON\n  resource_usage.sku_id = gcp_billing_export.sku_id\nWHERE\n  resource_usage.start_time >= gcp_billing_export.min_usage_start_time\n  AND resource_usage.end_time <= gcp_billing_export.max_usage_end_time\n  AND REGEXP_CONTAINS(cluster_location, r\"^${cluster_location:regex}$\")\n  AND REGEXP_CONTAINS(cluster_name, r\"^${cluster_name:regex}$\")\n  AND REGEXP_CONTAINS(namespace, r\"^${namespace:regex}$\")\n  AND REGEXP_CONTAINS(resource_name, r\"^${resource_name:regex}$\")\n  AND REGEXP_CONTAINS(\n    COALESCE(\n      (SELECT value\n       FROM UNNEST(labels)\n       WHERE\n         key = \"app\" OR key = \"app.kubernetes.io/name\" OR key = \"serving.knative.dev/service\"\n       ORDER BY LENGTH(value)\n       LIMIT 1\n      ), \"Unknown\"\n    ), r\"^${app:regex}$\")\nGROUP BY namespace\nORDER BY\n  REGEXP_CONTAINS(namespace, r\"kube.system\"),\n  cost desc\n\n\n",
               "refId": "A",
               "select": [
                 [
@@ -274,7 +274,7 @@ data:
               "group": [],
               "metricColumn": "none",
               "rawQuery": true,
-              "rawSql": "SELECT\n  COALESCE(\n    (SELECT value\n     FROM UNNEST(labels)\n     WHERE\n       key = \"app\" OR key = \"app.kubernetes.io/name\" OR key = \"serving.knative.dev/service\"\n     ORDER BY LENGTH(value)\n     LIMIT 1\n    ), \"Unknown\"\n  ) AS app,\n  SUM(resource_usage.usage.amount * gcp_billing_export.rate) AS cost\nFROM\n  `charlieegan3-cluster.cluster_usage.gke_cluster_resource_usage` AS resource_usage\nLEFT JOIN (\n  SELECT\n    sku.id AS sku_id,\n    SUM(cost) / SUM(usage.amount) AS rate,\n    MIN(usage_start_time) AS min_usage_start_time,\n    MAX(usage_end_time) AS max_usage_end_time\n  FROM\n    `charlieegan3-cluster.cluster_usage.billing_export3`\n  WHERE\n    project.id = \"charlieegan3-cluster\"\n    AND $__timeFilter(usage_end_time)\n  GROUP BY\n    sku_id) AS gcp_billing_export\nON\n  resource_usage.sku_id = gcp_billing_export.sku_id\nWHERE\n  resource_usage.start_time >= gcp_billing_export.min_usage_start_time\n  AND resource_usage.end_time <= gcp_billing_export.max_usage_end_time\n  AND REGEXP_CONTAINS(cluster_location, r\"^${cluster_location:regex}$\")\n  AND REGEXP_CONTAINS(cluster_name, r\"^${cluster_name:regex}$\")\n  AND REGEXP_CONTAINS(namespace, r\"^${namespace:regex}$\")\n  AND REGEXP_CONTAINS(resource_name, r\"^${resource_name:regex}$\")\n  AND REGEXP_CONTAINS(\n    COALESCE(\n      (SELECT value\n       FROM UNNEST(labels)\n       WHERE\n         key = \"app\" OR key = \"app.kubernetes.io/name\" OR key = \"serving.knative.dev/service\"\n       ORDER BY LENGTH(value)\n       LIMIT 1\n      ), \"Unknown\"\n    ), r\"^${app:regex}$\")\nGROUP BY app\nORDER BY\n  app = \"Unknown\",\n  cost desc\n",
+              "rawSql": "SELECT\n  COALESCE(\n    (SELECT value\n     FROM UNNEST(labels)\n     WHERE\n       key = \"app\" OR key = \"app.kubernetes.io/name\" OR key = \"serving.knative.dev/service\"\n     ORDER BY LENGTH(value)\n     LIMIT 1\n    ), \"Unknown\"\n  ) AS app,\n  SUM(resource_usage.usage.amount * gcp_billing_export.rate) AS cost\nFROM\n  `${project}.$usage_table_path` AS resource_usage\nLEFT JOIN (\n  SELECT\n    sku.id AS sku_id,\n    SUM(cost) / SUM(usage.amount) AS rate,\n    MIN(usage_start_time) AS min_usage_start_time,\n    MAX(usage_end_time) AS max_usage_end_time\n  FROM\n    `$billing_export`\n  WHERE\n    project.id = \"$project\"\n    AND $__timeFilter(usage_end_time)\n  GROUP BY\n    sku_id) AS gcp_billing_export\nON\n  resource_usage.sku_id = gcp_billing_export.sku_id\nWHERE\n  resource_usage.start_time >= gcp_billing_export.min_usage_start_time\n  AND resource_usage.end_time <= gcp_billing_export.max_usage_end_time\n  AND REGEXP_CONTAINS(cluster_location, r\"^${cluster_location:regex}$\")\n  AND REGEXP_CONTAINS(cluster_name, r\"^${cluster_name:regex}$\")\n  AND REGEXP_CONTAINS(namespace, r\"^${namespace:regex}$\")\n  AND REGEXP_CONTAINS(resource_name, r\"^${resource_name:regex}$\")\n  AND REGEXP_CONTAINS(\n    COALESCE(\n      (SELECT value\n       FROM UNNEST(labels)\n       WHERE\n         key = \"app\" OR key = \"app.kubernetes.io/name\" OR key = \"serving.knative.dev/service\"\n       ORDER BY LENGTH(value)\n       LIMIT 1\n      ), \"Unknown\"\n    ), r\"^${app:regex}$\")\nGROUP BY app\nORDER BY\n  app = \"Unknown\",\n  cost desc\n",
               "refId": "A",
               "select": [
                 [
@@ -310,81 +310,42 @@ data:
       "templating": {
         "list": [
           {
+            "current": {
+              "value": "charlieegan3-billing-export.charlieegan3_billing_export.gcp_billing_export_v1_005E2D_B6C22B_0274AA"
+            },
+            "hide": 2,
+            "label": null,
+            "name": "billing_export",
+            "skipUrlSync": false,
+            "type": "constant"
+          },
+          {
+            "current": {
+              "value": "cluster_usage.gke_cluster_resource_usage"
+            },
+            "hide": 2,
+            "label": null,
+            "name": "usage_table_path",
+            "skipUrlSync": false,
+            "type": "constant"
+          },
+          {
             "allValue": null,
             "current": {
-              "selected": true,
+              "tags": [],
               "text": "charlieegan3-cluster",
               "value": "charlieegan3-cluster"
             },
+            "datasource": "BigQuery",
+            "definition": "SELECT distinct project.id as project FROM `$billing_export` WHERE   project.id is not null ORDER BY   project",
             "hide": 0,
             "includeAll": false,
             "label": "Project",
             "multi": false,
             "name": "project",
-            "options": [
-              {
-                "selected": true,
-                "text": "charlieegan3-cluster",
-                "value": "charlieegan3-cluster"
-              },
-              {
-                "selected": false,
-                "text": "example-project",
-                "value": "example-project"
-              }
-            ],
-            "query": "charlieegan3-cluster,example-project",
-            "skipUrlSync": false,
-            "type": "custom"
-          },
-          {
-            "allValue": null,
-            "current": {
-              "text": "us-east1-b",
-              "value": "us-east1-b"
-            },
-            "datasource": "BigQuery",
-            "definition": "SELECT DISTINCT cluster_location FROM `charlieegan3-cluster.cluster_usage.gke_cluster_resource_usage` ",
-            "hide": 0,
-            "includeAll": false,
-            "label": "Location",
-            "multi": false,
-            "name": "cluster_location",
             "options": [],
-            "query": "SELECT DISTINCT cluster_location FROM `charlieegan3-cluster.cluster_usage.gke_cluster_resource_usage` ",
+            "query": "SELECT distinct project.id as project FROM `$billing_export` WHERE   project.id is not null ORDER BY   project",
             "refresh": 1,
-            "regex": "",
-            "skipUrlSync": false,
-            "sort": 1,
-            "tagValuesQuery": "",
-            "tags": [],
-            "tagsQuery": "",
-            "type": "query",
-            "useTags": false
-          },
-          {
-            "allValue": null,
-            "current": {
-              "selected": true,
-              "text": "main",
-              "value": "main"
-            },
-            "datasource": "BigQuery",
-            "definition": "SELECT DISTINCT cluster_name FROM `charlieegan3-cluster.cluster_usage.gke_cluster_resource_usage` ",
-            "hide": 0,
-            "includeAll": false,
-            "label": "Cluster",
-            "multi": false,
-            "name": "cluster_name",
-            "options": [
-              {
-                "selected": true,
-                "text": "main",
-                "value": "main"
-              }
-            ],
-            "query": "SELECT DISTINCT cluster_name FROM `charlieegan3-cluster.cluster_usage.gke_cluster_resource_usage` ",
-            "refresh": 0,
             "regex": "",
             "skipUrlSync": false,
             "sort": 0,
@@ -398,18 +359,69 @@ data:
             "allValue": ".+",
             "current": {
               "tags": [],
-              "text": "istio-system",
-              "value": "istio-system"
+              "text": "All",
+              "value": "$__all"
             },
             "datasource": "BigQuery",
-            "definition": "SELECT DISTINCT namespace FROM `charlieegan3-cluster.cluster_usage.gke_cluster_resource_usage`",
+            "definition": "SELECT DISTINCT cluster_location FROM `$project.$usage_table_path` ",
+            "hide": 0,
+            "includeAll": true,
+            "label": "Location",
+            "multi": false,
+            "name": "cluster_location",
+            "options": [],
+            "query": "SELECT DISTINCT cluster_location FROM `$project.$usage_table_path` ",
+            "refresh": 1,
+            "regex": "",
+            "skipUrlSync": false,
+            "sort": 1,
+            "tagValuesQuery": "",
+            "tags": [],
+            "tagsQuery": "",
+            "type": "query",
+            "useTags": false
+          },
+          {
+            "allValue": ".+",
+            "current": {
+              "tags": [],
+              "text": "All",
+              "value": "$__all"
+            },
+            "datasource": "BigQuery",
+            "definition": "SELECT DISTINCT cluster_name FROM `$project.$usage_table_path` ",
+            "hide": 0,
+            "includeAll": true,
+            "label": "Cluster",
+            "multi": false,
+            "name": "cluster_name",
+            "query": "SELECT DISTINCT cluster_name FROM `$project.$usage_table_path` ",
+            "refresh": 1,
+            "regex": "",
+            "skipUrlSync": false,
+            "sort": 0,
+            "tagValuesQuery": "",
+            "tags": [],
+            "tagsQuery": "",
+            "type": "query",
+            "useTags": false
+          },
+          {
+            "allValue": ".+",
+            "current": {
+              "tags": [],
+              "text": "All",
+              "value": "$__all"
+            },
+            "datasource": "BigQuery",
+            "definition": "SELECT DISTINCT namespace FROM `$project.$usage_table_path`",
             "hide": 0,
             "includeAll": true,
             "label": "Namespace",
             "multi": false,
             "name": "namespace",
             "options": [],
-            "query": "SELECT DISTINCT namespace FROM `charlieegan3-cluster.cluster_usage.gke_cluster_resource_usage`",
+            "query": "SELECT DISTINCT namespace FROM `$project.$usage_table_path`",
             "refresh": 1,
             "regex": "",
             "skipUrlSync": false,
@@ -427,14 +439,14 @@ data:
               "value": "$__all"
             },
             "datasource": "BigQuery",
-            "definition": "SELECT DISTINCT   COALESCE(     (SELECT value      FROM UNNEST(labels)      WHERE        key = \"app\" OR key = \"app.kubernetes.io/name\" OR key = \"serving.knative.dev/service\"      ORDER BY LENGTH(value)      LIMIT 1     ), \"Unknown\"   ) AS app FROM   `charlieegan3-cluster.cluster_usage.gke_cluster_resource_usage` AS resource_usage WHERE   not namespace in (\"kube-system\", \"kube:system-overhead\")   AND REGEXP_CONTAINS(namespace, r\"^${namespace:regex}$\") ORDER BY   app = \"Unknown\", app ",
+            "definition": "SELECT DISTINCT   COALESCE(     (SELECT value      FROM UNNEST(labels)      WHERE        key = \"app\" OR key = \"app.kubernetes.io/name\" OR key = \"serving.knative.dev/service\"      ORDER BY LENGTH(value)      LIMIT 1     ), \"Unknown\"   ) AS app FROM   `$project.$usage_table_path` AS resource_usage WHERE   not namespace in (\"kube-system\", \"kube:system-overhead\")   AND REGEXP_CONTAINS(namespace, r\"^${namespace:regex}$\") ORDER BY   app = \"Unknown\", app ",
             "hide": 0,
             "includeAll": true,
             "label": "App",
             "multi": false,
             "name": "app",
             "options": [],
-            "query": "SELECT DISTINCT   COALESCE(     (SELECT value      FROM UNNEST(labels)      WHERE        key = \"app\" OR key = \"app.kubernetes.io/name\" OR key = \"serving.knative.dev/service\"      ORDER BY LENGTH(value)      LIMIT 1     ), \"Unknown\"   ) AS app FROM   `charlieegan3-cluster.cluster_usage.gke_cluster_resource_usage` AS resource_usage WHERE   not namespace in (\"kube-system\", \"kube:system-overhead\")   AND REGEXP_CONTAINS(namespace, r\"^${namespace:regex}$\") ORDER BY   app = \"Unknown\", app ",
+            "query": "SELECT DISTINCT   COALESCE(     (SELECT value      FROM UNNEST(labels)      WHERE        key = \"app\" OR key = \"app.kubernetes.io/name\" OR key = \"serving.knative.dev/service\"      ORDER BY LENGTH(value)      LIMIT 1     ), \"Unknown\"   ) AS app FROM   `$project.$usage_table_path` AS resource_usage WHERE   not namespace in (\"kube-system\", \"kube:system-overhead\")   AND REGEXP_CONTAINS(namespace, r\"^${namespace:regex}$\") ORDER BY   app = \"Unknown\", app ",
             "refresh": 1,
             "regex": "",
             "skipUrlSync": false,
@@ -452,14 +464,14 @@ data:
               "value": "$__all"
             },
             "datasource": "BigQuery",
-            "definition": "SELECT DISTINCT resource_name FROM `charlieegan3-cluster.cluster_usage.gke_cluster_resource_usage` ",
+            "definition": "SELECT DISTINCT resource_name FROM `$project.$usage_table_path` ",
             "hide": 0,
             "includeAll": true,
             "label": "Resource",
             "multi": false,
             "name": "resource_name",
             "options": [],
-            "query": "SELECT DISTINCT resource_name FROM `charlieegan3-cluster.cluster_usage.gke_cluster_resource_usage` ",
+            "query": "SELECT DISTINCT resource_name FROM `$project.$usage_table_path` ",
             "refresh": 1,
             "regex": "",
             "skipUrlSync": false,
@@ -492,6 +504,6 @@ data:
       },
       "timezone": "",
       "title": "GKE Costs",
-      "uid": "HvONDBxWk",
+      "uid": "03BJtXbZz",
       "version": 1
     }
