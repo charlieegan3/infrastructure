@@ -76,14 +76,14 @@ spec:
               value: "true"
           containers:
           - name: instagram-archive-refresh
-            image: charlieegan3/photos:0babc38030210f66563e125c824279b74665b80a
+            image: charlieegan3/photos:45eba7a398d04b1db7ed368a465fbfbd0dc8e68d
             resources:
               requests:
-                cpu: 0.3
-                memory: 200Mi
+                cpu: 10m
+                memory: 10Mi
               limits:
-                cpu: 0.3
-                memory: 200Mi
+                cpu: 0.5
+                memory: 100Mi
             volumeMounts:
             - name: secrets
               mountPath: /etc/config
