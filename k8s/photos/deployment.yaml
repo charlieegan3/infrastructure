@@ -20,7 +20,7 @@ spec:
     spec:
       initContainers:
       - name: init-shared-volume
-        image: charlieegan3/photos-rebuilder:89996ce399bf5b15051941a7d9806cd6
+        image: charlieegan3/photos-rebuilder:532fe2ecb1c3f3d8b00dd550da820206
         command:
         - cp
         - -r
@@ -46,7 +46,7 @@ spec:
             memory: "100Mi"
             cpu: "200m"
       - name: rebuilder
-        image: charlieegan3/photos-rebuilder:89996ce399bf5b15051941a7d9806cd6
+        image: charlieegan3/photos-rebuilder:532fe2ecb1c3f3d8b00dd550da820206
         env:
         - name: USER
           value: charlieegan3
