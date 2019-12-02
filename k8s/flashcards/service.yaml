@@ -21,8 +21,8 @@ spec:
           mountPath: /etc/rails/config
         resources:
           limits:
-            cpu: "300m"
-            memory: "200Mi"
+            cpu: "2"
+            memory: "500Mi"
           requests:
             cpu: "10m"
             memory: "10Mi"

@@ -44,6 +44,7 @@ RUN helm template --name=po \
 RUN cat includes/prometheus/*.yaml >> /output/prometheus.yaml
 
 # render grafana chart
+RUN rm -r grafana/templates/tests
 RUN helm template --name=gf \
       --namespace=monitoring \
       --values=values/grafana.yaml \

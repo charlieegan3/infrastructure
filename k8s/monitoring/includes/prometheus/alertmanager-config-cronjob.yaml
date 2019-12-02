@@ -8,6 +8,7 @@ spec:
   concurrencyPolicy: Forbid
   schedule: "* * * * *"
   successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
   jobTemplate:
     metadata:
       labels:

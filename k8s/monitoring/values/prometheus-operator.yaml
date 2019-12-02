@@ -27,15 +27,22 @@ prometheus:
     externalUrl: ""
     ruleSelector:
       matchLabels: {}
-    retention: 24h
+    retention: 6h
+    resources:
+      requests:
+        memory: 1Gi
+        cpu: 500m
+      limits:
+        memory: 1500Mi
+        cpu: 1
     image:
-      tag: v2.14.0-rc.0
+      tag: v2.14.0
     storageSpec:
       volumeClaimTemplate:
         spec:
           resources:
             requests:
-              storage: 3Gi
+              storage: 2Gi
     additionalScrapeConfigsExternal: true
 
 alertmanager:

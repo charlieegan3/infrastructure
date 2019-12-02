@@ -30,3 +30,10 @@ plugins:
 serviceAccount:
   annotations:
     iam.gke.io/gcp-service-account: "bigquery-user-readonly@charlieegan3-cluster.iam.gserviceaccount.com"
+resources:
+  requests:
+    cpu: 100m
+    memory: 100Mi
+  limits:
+    cpu: 200m
+    memory: 200Mi

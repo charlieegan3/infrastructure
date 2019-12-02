@@ -10,6 +10,6 @@ build: image
 		docker cp $$container:/output/. output/all
 	cat output/all/*.yaml > output/merged.yaml
 
-apply:
+apply: build
 	kubectl config set-context --current --namespace=auth
 	kubectl apply -f output/merged.yaml -n auth
