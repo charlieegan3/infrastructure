@@ -4,3 +4,6 @@ path "secret/calendars/main" {
 path "secret/clockify/main" {
   capabilities = ["read"]
 }
+path "secret/flashcards-api/main" {
+  capabilities = ["read"]
+}

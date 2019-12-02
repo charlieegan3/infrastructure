@@ -1,0 +1,25 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: reload-cards
+  namespace: flashcards
+spec:
+  schedule: "*/10 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          volumes:
+          - name: config
+            secret:
+              secretName: config
+          containers:
+          - name: reload-cards
+            image: charlieegan3/flashcards:9a50d240334a2c2514c387bbec4c2d1d
+            command:
+            - rake
+            - reload:cards
+            volumeMounts:
+            - name: config
+              mountPath: /etc/rails/config
