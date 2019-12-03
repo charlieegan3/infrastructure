@@ -12,7 +12,7 @@ spec:
         secret:
           secretName: config
       containers:
-      - image: charlieegan3/flashcards:9a50d240334a2c2514c387bbec4c2d1d
+      - image: charlieegan3/flashcards:2f85aa1db99f44f3cb14b8846fc1d122
         ports:
         - name: http1
           containerPort: 3000
