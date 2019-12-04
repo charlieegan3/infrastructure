@@ -17,32 +17,11 @@ spec:
       insecureSkipVerify: false
       serverName: kubernetes
     metricRelabelings:
-    # I don't have any alerts for these metrics so I'm not collecting to save
-    # space
+    # remove all other metrics
     - sourceLabels:
       - "__name__"
-      regex: apiserver_request_duration_seconds_bucket
-      action: drop
-    - sourceLabels:
-      - "__name__"
-      regex: apiserver_response_sizes_bucket
-      action: drop
-    - sourceLabels:
-      - "__name__"
-      regex: apiserver_request_total
-      action: drop
-    - sourceLabels:
-      - "__name__"
-      regex: apiserver_request_duration_seconds_sum
-      action: drop
-    - sourceLabels:
-      - "__name__"
-      regex: apiserver_request_latencies_sum
-      action: drop
-    - sourceLabels:
-      - "__name__"
-      regex: apiserver_request_latencies_count
-      action: drop
+      regex: "(apiserver_request_latencies_bucket|apiserver_request_count)"
+      action: keep
   jobLabel: component
   namespaceSelector:
     matchNames:

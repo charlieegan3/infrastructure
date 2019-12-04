@@ -7,6 +7,8 @@ defaultRules:
     # assumptions that do not hold about metric labels from ksm
     kubernetesResources: false
     node: true
+    # creating my own with the new label names
+    k8s: false
 
 prometheus:
   ingress:
@@ -73,10 +75,8 @@ prometheusOperator:
   kubeletService:
     namespace: monitoring
 kubelet:
-  namespace: monitoring
-  serviceMonitor:
-    # https://github.com/coreos/prometheus-operator/issues/926
-    https: false
+  # deploy my own service monitor to drop labels
+  enabled: false
 
 kubeDns:
   enabled: true

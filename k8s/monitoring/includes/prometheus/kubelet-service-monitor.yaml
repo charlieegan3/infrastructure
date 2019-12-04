@@ -1,0 +1,36 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app: promop-kubelet
+    chart: prometheus-operator-8.1.2
+    heritage: Tiller
+    release: po
+  name: po-promop-kubelet
+  namespace: monitoring
+spec:
+  endpoints:
+  - honorLabels: true
+    port: http-metrics
+    metricRelabelings:
+    # remove all other metrics
+    - sourceLabels:
+      - "__name__"
+      regex: "(kubelet_volume_stats_available_bytes|kubelet_volume_stats_capacity_bytes|kubelet_running_pod_count)"
+      action: keep
+  - honorLabels: true
+    path: /metrics/cadvisor
+    port: http-metrics
+    metricRelabelings:
+    # remove all other metrics
+    - sourceLabels:
+      - "__name__"
+      regex: "(container_cpu_usage_seconds_total|container_memory_usage_bytes|container_cpu_cfs_throttled_periods_total|container_cpu_cfs_periods_total)"
+      action: keep
+  jobLabel: k8s-app
+  namespaceSelector:
+    matchNames:
+    - monitoring
+  selector:
+    matchLabels:
+      k8s-app: kubelet
