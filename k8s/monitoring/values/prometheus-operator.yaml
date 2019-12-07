@@ -2,13 +2,11 @@ nameOverride: promop
 fullNameOverride: promop
 
 defaultRules:
-  rules:
-    # these have all been disabled and included manually becuase they make
-    # assumptions that do not hold about metric labels from ksm
-    kubernetesResources: false
-    node: true
-    # creating my own with the new label names
-    k8s: false
+  # GKE manages my cluster so many of the defaults are out of my control.  I
+  # also use preemptible nodes so often the whole monitoring set of services
+  # are down. Basically my cluster is unreliable and I don't want alertmanager
+  # chirping at me about it.
+  create: false
 
 prometheus:
   ingress:
