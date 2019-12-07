@@ -6,6 +6,9 @@ metadata:
 spec:
   schedule: "*/10 * * * *"
   jobTemplate:
+    metadata:
+      labels:
+        cronjob: reload-cards
     spec:
       template:
         spec:
