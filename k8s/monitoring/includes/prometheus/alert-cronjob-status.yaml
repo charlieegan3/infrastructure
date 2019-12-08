@@ -40,6 +40,6 @@ spec:
     - alert: CronJobStatusFailed
       expr: |
         sum(job_cronjob:kube_job_status_failed:sum) by (label_cronjob) > 0
-      for: 15m
+      for: 3h
       annotations:
         description: '{{ $labels.label_cronjob }} last run has failed {{ $value }} times.'
