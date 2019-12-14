@@ -1,0 +1,11 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: thanos-objstore-config
+  namespace: monitoring
+stringData:
+  thanos.yaml: |
+    type: GCS
+    config:
+      bucket: "charlieegan3-cluster-thanos"
