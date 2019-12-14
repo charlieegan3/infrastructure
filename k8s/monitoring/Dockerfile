@@ -12,7 +12,7 @@ RUN curl -LO https://storage.googleapis.com/kubernetes-helm/helm-v${VERSION}-lin
     helm init --client-only
 
 # fetch prometheus chart
-ENV CHART_VERSION=8.1.2
+ENV CHART_VERSION=8.3.3
 RUN helm repo update && helm fetch stable/prometheus-operator --version=$CHART_VERSION && \
     tar -zxf prometheus-operator-${CHART_VERSION}.tgz
 
