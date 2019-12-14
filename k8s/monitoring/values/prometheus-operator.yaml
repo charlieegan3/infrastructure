@@ -28,6 +28,9 @@ prometheus:
   prometheusSpec:
     serviceMonitorSelectorNilUsesHelmValues: false
     externalUrl: ""
+    externalLabels:
+      cluster: main
+      region: us-east1
     ruleSelector:
       matchLabels: {}
     retention: 6h
