@@ -116,7 +116,7 @@ resource "google_container_node_pool" "main" {
   version = local.node_version
 
   autoscaling {
-    min_node_count = 1
+    min_node_count = 2
     max_node_count = 2
   }
 
