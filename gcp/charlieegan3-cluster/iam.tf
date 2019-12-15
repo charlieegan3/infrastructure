@@ -76,5 +76,8 @@ resource "google_service_account_iam_binding" "thanos-pod" {
   role               = "roles/iam.serviceAccountTokenCreator"
 
   # thanos runs as a sidecar in the prometheus pod
-  members = ["serviceAccount:charlieegan3-cluster.svc.id.goog[monitoring/po-promop-prometheus]"]
+  members = [
+    "serviceAccount:charlieegan3-cluster.svc.id.goog[monitoring/po-promop-prometheus]",
+    "serviceAccount:charlieegan3-cluster.svc.id.goog[monitoring/thanos-store]"
+  ]
 }
