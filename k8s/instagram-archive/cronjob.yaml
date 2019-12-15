@@ -83,7 +83,7 @@ spec:
                 memory: 10Mi
               limits:
                 cpu: 0.5
-                memory: 100Mi
+                memory: 500Mi
             volumeMounts:
             - name: secrets
               mountPath: /etc/config
