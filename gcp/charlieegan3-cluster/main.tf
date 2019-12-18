@@ -141,5 +141,5 @@ resource "google_project_service" "storage-component" {
 }
 
 variable "cluster_version" {
-  default = "1.14"
+  default = "1.15"
 }
