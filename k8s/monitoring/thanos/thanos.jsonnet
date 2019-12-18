@@ -10,6 +10,7 @@ local serviceaccount = k.core.v1.serviceAccount;
 local kt =
   (import 'kube-thanos/kube-thanos-querier.libsonnet') +
   (import 'kube-thanos/kube-thanos-store.libsonnet') +
+  (import 'kube-thanos/kube-thanos-compactor.libsonnet') +
   {
     thanos+:: {
       // This is just an example image, set what you need
@@ -28,6 +29,34 @@ local kt =
                   // this allows prometheus sidecars to be used as stores for recent data too
                   super.containers[0] {
                     args+: ['--store=dnssrv+_grpc._tcp.prometheus-operated.monitoring.svc.cluster.local'],
+                    resources+: {
+                      requests: { cpu: '100m', memory: '100Mi' },
+                      limits: { cpu: '1', memory: '1Gi' },
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+      compactor+: {
+        statefulSet+: {
+          spec+: {
+            template+: {
+              spec+: {
+                serviceAccountName: 'thanos-compactor',
+                containers: [
+                  super.containers[0] {
+                    args: [
+                      'compact',
+                      '--wait',
+                      '--retention.resolution-raw=1h',
+                      '--retention.resolution-5m=1d',
+                      '--retention.resolution-1h=180d',
+                      '--objstore.config=$(OBJSTORE_CONFIG)',
+                      '--data-dir=/var/thanos/compactor',
+                    ],
                     resources+: {
                       requests: { cpu: '100m', memory: '100Mi' },
                       limits: { cpu: '1', memory: '1Gi' },
@@ -62,15 +91,22 @@ local kt =
   };
 
 
-// Thanos Store Extras
-// * create an annotated service account for workload ID
+// Extras
+// * create additional sas with annotations for gke workload id
 local store_sa = serviceaccount.new('thanos-store') +
                  serviceaccount.mixin.metadata.withAnnotations({
                    'iam.gke.io/gcp-service-account': 'thanos@charlieegan3-cluster.iam.gserviceaccount.com',
                  });
+local compactor_sa = serviceaccount.new('thanos-compactor') +
+                     serviceaccount.mixin.metadata.withAnnotations({
+                       'iam.gke.io/gcp-service-account': 'thanos@charlieegan3-cluster.iam.gserviceaccount.com',
+                     });
 
 // Output the merged configuration of selected components
 { ['thanos-store-' + name]: kt.thanos.store[name] for name in std.objectFields(kt.thanos.store) } +
 { 'thanos-store-serviceaccount': store_sa } +
 
-{ ['thanos-querier-' + name]: kt.thanos.querier[name] for name in std.objectFields(kt.thanos.querier) }
+{ ['thanos-querier-' + name]: kt.thanos.querier[name] for name in std.objectFields(kt.thanos.querier) } +
+
+{ ['thanos-compactor-' + name]: kt.thanos.compactor[name] for name in std.objectFields(kt.thanos.compactor) } +
+{ 'thanos-compactor-serviceaccount': compactor_sa }
