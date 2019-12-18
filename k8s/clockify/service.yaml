@@ -12,7 +12,7 @@ spec:
         secret:
           secretName: config
       containers:
-      - image: "docker.io/charlieegan3/clockify:43187822520e98bee041f9c03b7ebce7"
+      - image: "docker.io/charlieegan3/clockify:95f7a3813d2c020de22eadf1d1da3160"
         ports:
         - name: http1
           containerPort: 80
