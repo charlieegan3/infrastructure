@@ -5,6 +5,7 @@ local sts_container = sts.mixin.spec.template.spec.containersType;
 local deployment = k.apps.v1.deployment;
 local dep_container = deployment.mixin.spec.template.spec.containersType;
 local serviceaccount = k.core.v1.serviceAccount;
+local ingress = k.extensions.v1beta1.ingress;
 
 // generate kube-thanos resources
 local kt =
@@ -93,6 +94,7 @@ local kt =
 
 // Extras
 // * create additional sas with annotations for gke workload id
+// * create an ingress for the querier
 local store_sa = serviceaccount.new('thanos-store') +
                  serviceaccount.mixin.metadata.withAnnotations({
                    'iam.gke.io/gcp-service-account': 'thanos@charlieegan3-cluster.iam.gserviceaccount.com',
@@ -101,12 +103,52 @@ local compactor_sa = serviceaccount.new('thanos-compactor') +
                      serviceaccount.mixin.metadata.withAnnotations({
                        'iam.gke.io/gcp-service-account': 'thanos@charlieegan3-cluster.iam.gserviceaccount.com',
                      });
+local querier_ingress = ingress.new() +
+                        {
+                          metadata: {
+                            annotations: {
+                              'cert-manager.io/cluster-issuer': 'letsencrypt-prod',
+                              'kubernetes.io/ingress.class': 'nginx',
+                              'nginx.ingress.kubernetes.io/auth-signin': 'https://auth.charlieegan3.com/oauth2/start?rd=https://thanos.charlieegan3.com',
+                              'nginx.ingress.kubernetes.io/auth-url': 'https://auth.charlieegan3.com/oauth2/auth',
+                            },
+                            name: 'thanos-querier',
+                            namespace: 'monitoring',
+                          },
+                          spec: {
+                            rules: [
+                              {
+                                host: 'thanos.charlieegan3.com',
+                                http: {
+                                  paths: [
+                                    {
+                                      backend: {
+                                        serviceName: 'thanos-querier',
+                                        servicePort: 9090,
+                                      },
+                                      path: '/',
+                                    },
+                                  ],
+                                },
+                              },
+                            ],
+                            tls: [
+                              {
+                                hosts: [
+                                  'thanos.charlieegan3.com',
+                                ],
+                                secretName: 'thanos-tls',
+                              },
+                            ],
+                          },
+                        };
 
 // Output the merged configuration of selected components
 { ['thanos-store-' + name]: kt.thanos.store[name] for name in std.objectFields(kt.thanos.store) } +
 { 'thanos-store-serviceaccount': store_sa } +
 
 { ['thanos-querier-' + name]: kt.thanos.querier[name] for name in std.objectFields(kt.thanos.querier) } +
+{ 'thanos-querier-ingress': querier_ingress }
 
 { ['thanos-compactor-' + name]: kt.thanos.compactor[name] for name in std.objectFields(kt.thanos.compactor) } +
 { 'thanos-compactor-serviceaccount': compactor_sa }

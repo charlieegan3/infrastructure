@@ -79,4 +79,4 @@ RUN cat includes/cloud-billing-exporter/*.yaml >> /output/cloud-billing-exporter
 COPY thanos thanos
 RUN cd thanos && set -o pipefail && jsonnet -J vendor -m manifests thanos.jsonnet | \
 	xargs -I{} sh -c 'cat {} | gojsontoyaml > {}.yaml; rm -f {}' -- {}
-RUN cat thanos/manifests/*.yaml >> /output/thanos.yaml
+RUN cp thanos/manifests/*.yaml /output/
