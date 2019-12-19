@@ -69,11 +69,6 @@ resource "google_container_node_pool" "ingress" {
     auto_upgrade = false
   }
 
-  autoscaling {
-    min_node_count = 1
-    max_node_count = 1
-  }
-
   node_config {
     preemptible  = false
     machine_type = "f1-micro"
@@ -114,11 +109,6 @@ resource "google_container_node_pool" "main" {
   node_count = 2
 
   version = local.node_version
-
-  autoscaling {
-    min_node_count = 2
-    max_node_count = 2
-  }
 
   management {
     auto_repair  = true
