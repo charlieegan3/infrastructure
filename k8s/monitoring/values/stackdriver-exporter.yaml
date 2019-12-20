@@ -10,6 +10,7 @@ serviceMonitor:
   interval: 12h
   namespace: monitoring
 stackdriver:
+  serviceAccountSecret: stackdriver-service-account
   projectId: charlieegan3-cluster
   metrics:
     interval: 12h
