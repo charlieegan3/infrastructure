@@ -13,9 +13,9 @@ RUN curl -LO https://storage.googleapis.com/kubernetes-helm/helm-v${VERSION}-lin
     helm init --client-only
 
 # fetch vault chart
-ENV version 36ab8014b066372f7a63c626d9d1f077b02db052
-RUN curl -LO https://github.com/charlieegan3/vault-helm/archive/$version.zip
-RUN unzip $version.zip && mv vault-helm-$version/ chart
+ENV version 0.3.0
+RUN curl -LO https://github.com/hashicorp/vault-helm/archive/v$version.zip
+RUN unzip v$version.zip && mv vault-helm-$version/ chart
 
 COPY values.yaml ./
 COPY additional ./additional

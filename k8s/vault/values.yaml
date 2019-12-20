@@ -1,11 +1,8 @@
+global:
+  tlsDisable: true
 server:
-  serviceaccount:
-    annotations:
-      iam.gke.io/gcp-service-account: "vault-server@charlieegan3-cluster.iam.gserviceaccount.com"
   dataStorage:
     enabled: false
-  authDelegator:
-    enabled: true
   resources:
     requests:
       memory: 128Mi
@@ -13,8 +10,10 @@ server:
     limits:
       memory: 150Mi
       cpu: 400m
+  livenessProbe:
+    enabled: true
   standalone:
-    config: |-
+    config: |
       ui = false
 
       listener "tcp" {
@@ -25,7 +24,6 @@ server:
 
       storage "gcs" {
         bucket     = "charlieegan3-cluster-vault-storage"
-        ha_enabled = "false"
       }
 
       seal "gcpckms" {
