@@ -15,55 +15,19 @@ spec:
         cronjob: alertmanager-config-creator
     spec:
       template:
+        metadata:
+          annotations:
+            vault.hashicorp.com/agent-inject: "true"
+            vault.hashicorp.com/role: "monitoring"
+            vault.hashicorp.com/agent-pre-populate-only: "true"
+            vault.hashicorp.com/agent-inject-secret-alertmanager.yaml: "secret/monitoring/alertmanager-config"
+            vault.hashicorp.com/agent-inject-template-alertmanager.yaml: |
+              {{- with secret "secret/monitoring/alertmanager-config" -}}
+              {{- .Data.text -}}
+              {{- end -}}
         spec:
           restartPolicy: Never
           serviceAccount: alertmanager-config-creator
-          volumes:
-          - name: secrets
-            emptyDir:
-              medium: Memory
-          - name: vault-token
-            emptyDir:
-              medium: Memory
-          - name: consul-template-config
-            configMap:
-              name: consul-template
-          initContainers:
-          - name: vault-authenticator
-            image: registry.hub.docker.com/sethvargo/vault-kubernetes-authenticator:0.1.0
-            volumeMounts:
-            - name: vault-token
-              mountPath: /home/vault
-            env:
-            - name: TOKEN_DEST_PATH
-              value: /home/vault/.vault-token
-            - name: VAULT_ADDR
-              value: "http://vs-vault.vault:8200"
-            - name: VAULT_ROLE
-              value: monitoring
-          - name: consul-template
-            image: registry.hub.docker.com/hashicorp/consul-template:0.19.5-scratch
-            command:
-            - /consul-template
-            - -config
-            - /etc/consul-template/config.hcl
-            - -log-level
-            - debug
-            - -once
-            volumeMounts:
-            - name: secrets
-              mountPath: /etc/data
-            - name: vault-token
-              mountPath: /home/vault
-            - name: consul-template-config
-              mountPath: /etc/consul-template
-            env:
-            - name: HOME
-              value: /home/vault
-            - name: VAULT_ADDR
-              value: "http://vs-vault.vault:8200"
-            - name: VAULT_SKIP_VERIFY
-              value: "true"
           containers:
           - name: create-config-map
             image: gcr.io/google_containers/hyperkube:v1.15.5
@@ -72,31 +36,11 @@ spec:
             - -c
             - |-
               kubectl create secret generic alertmanager-po-promop-alertmanager \
-                --from-file=/etc/data/alertmanager.yaml \
+                --from-file=/vault/secrets/alertmanager.yaml \
                 -n monitoring \
                 -o yaml \
                 --dry-run > secret.yaml && \
               kubectl apply -f secret.yaml
-            volumeMounts:
-            - name: secrets
-              mountPath: /etc/data
----
-kind: ConfigMap
-apiVersion: v1
-metadata:
-  name: consul-template
-  namespace: monitoring
-data:
-  config.hcl: |
-    template {
-      error_on_missing_key = true
-      contents = <<EOH
-        {{- with secret "secret/monitoring/alertmanager-config" -}}
-        {{- .Data.text -}}
-        {{- end -}}
-      EOH
-      destination = "/etc/data/alertmanager.yaml"
-    }
 ---
 apiVersion: v1
 kind: ServiceAccount
