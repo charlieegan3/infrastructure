@@ -32,6 +32,9 @@ spec:
           - name: consul-template-config
             configMap:
               name: consul-template
+          - name: google-application-credentials
+            secret:
+              secretName: google-application-credentials
           initContainers:
           - name: vault-authenticator
             image: registry.hub.docker.com/sethvargo/vault-kubernetes-authenticator:0.1.0
@@ -68,16 +71,6 @@ spec:
               value: "http://vs-vault.vault:8200"
             - name: VAULT_SKIP_VERIFY
               value: "true"
-          - name: fetch-google-token
-            command:
-            - /bin/sh
-            - -c
-            # sleep to wait for pod to arrive in informer cache
-            - "sleep 5 && curl -H 'Metadata-Flavor: Google' http://metadata/computeMetadata/v1/instance/service-accounts/bigquery-uploader@charlieegan3-music-1.iam.gserviceaccount.com/token > /etc/config/google.json"
-            image: google/cloud-sdk
-            volumeMounts:
-            - mountPath: /etc/config
-              name: shared-data
           containers:
           - image: "{{ $.Values.images.tracker }}"
             name: "{{ $job.name }}"
@@ -85,11 +78,13 @@ spec:
             - /musicPlayTracker
             - "{{ $job.command }}"
             env:
-            - name: GOOGLE_ACCESS_TOKEN_PATH
-              value: /etc/config/google.json
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /etc/config/google/key.json
             - name: GO_ENV
               value: prod
             volumeMounts:
             - mountPath: /etc/config
               name: shared-data
+            - name: google-application-credentials
+              mountPath: /etc/config/google
 {{- end }}
