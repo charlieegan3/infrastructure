@@ -7,61 +7,27 @@ metadata:
 spec:
   schedule: "* * * * *"
   concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
   jobTemplate:
     metadata:
       labels:
         cronjob: config-map-creator
     spec:
       template:
+        metadata:
+          annotations:
+            vault.hashicorp.com/agent-inject: "true"
+            vault.hashicorp.com/role: "finance"
+            vault.hashicorp.com/agent-pre-populate-only: "true"
+            vault.hashicorp.com/agent-inject-secret-configmap.yaml: "secret/finance/main"
+            vault.hashicorp.com/agent-inject-template-configmap.yaml: |
+              {{- with secret "secret/finance/main" -}}
+              {{- .Data.text -}}
+              {{- end -}}
         spec:
           restartPolicy: Never
           serviceAccount: config-map-creator
-          volumes:
-          - name: secrets
-            emptyDir:
-              medium: Memory
-          - name: vault-token
-            emptyDir:
-              medium: Memory
-          - name: consul-template-config
-            configMap:
-              name: consul-template
-          initContainers:
-          - name: vault-authenticator
-            image: registry.hub.docker.com/sethvargo/vault-kubernetes-authenticator:0.1.0
-            volumeMounts:
-            - name: vault-token
-              mountPath: /home/vault
-            env:
-            - name: TOKEN_DEST_PATH
-              value: /home/vault/.vault-token
-            - name: VAULT_ADDR
-              value: "http://vs-vault.vault:8200"
-            - name: VAULT_ROLE
-              value: finance
-          - name: consul-template
-            image: registry.hub.docker.com/hashicorp/consul-template:0.19.5-scratch
-            command:
-            - /consul-template
-            - -config
-            - /etc/consul-template/config.hcl
-            - -log-level
-            - debug
-            - -once
-            volumeMounts:
-            - name: secrets
-              mountPath: /etc/data
-            - name: vault-token
-              mountPath: /home/vault
-            - name: consul-template-config
-              mountPath: /etc/consul-template
-            env:
-            - name: HOME
-              value: /home/vault
-            - name: VAULT_ADDR
-              value: "http://vs-vault.vault:8200"
-            - name: VAULT_SKIP_VERIFY
-              value: "true"
           containers:
           - name: create-config-map
             image: gcr.io/google_containers/hyperkube:v1.15.5
@@ -69,7 +35,4 @@ spec:
             - /bin/sh
             - -c
             - |-
-              kubectl apply -f /etc/data/configmap.yaml
-            volumeMounts:
-            - name: secrets
-              mountPath: /etc/data
+              kubectl apply -f /vault/secrets/configmap.yaml
