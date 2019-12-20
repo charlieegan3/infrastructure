@@ -38,6 +38,9 @@ spec:
           - name: consul-template-config
             configMap:
               name: consul-template
+          - name: google-application-credentials
+            secret:
+              secretName: google-application-credentials
           initContainers:
           - name: vault-authenticator
             image: registry.hub.docker.com/sethvargo/vault-kubernetes-authenticator:0.1.0
@@ -84,6 +87,14 @@ spec:
               limits:
                 cpu: 0.5
                 memory: 500Mi
+            command:
+            - sh
+            - -c
+            - |
+              gcloud auth activate-service-account --key-file=/etc/config/google/key.json && \
+              /entrypoint.sh
             volumeMounts:
             - name: secrets
               mountPath: /etc/config
+            - name: google-application-credentials
+              mountPath: /etc/config/google
