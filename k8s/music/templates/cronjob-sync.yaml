@@ -12,6 +12,7 @@ spec:
   schedule: "{{ $job.schedule }}"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
   jobTemplate:
     metadata:
       labels:
