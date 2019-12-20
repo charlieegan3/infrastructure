@@ -1,4 +1,4 @@
 apply:
-	terraform apply -auto-approve plan.tf
+	terraform apply -auto-approve /tmp/plan.tf
 plan:
-	terraform plan -out=plan.tf
+	terraform plan -out=/tmp/plan.tf

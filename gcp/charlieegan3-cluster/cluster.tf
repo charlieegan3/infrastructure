@@ -45,10 +45,6 @@ resource "google_container_cluster" "main" {
     }
   }
 
-  workload_identity_config {
-    identity_namespace = "${var.project_id}.svc.id.goog"
-  }
-
   monitoring_service = "none"
   logging_service    = "none"
 }
@@ -92,10 +88,6 @@ resource "google_container_node_pool" "ingress" {
       "https://www.googleapis.com/auth/logging.write",
       "https://www.googleapis.com/auth/monitoring",
     ]
-
-    workload_metadata_config {
-      node_metadata = "GKE_METADATA_SERVER"
-    }
   }
 }
 
@@ -128,9 +120,5 @@ resource "google_container_node_pool" "main" {
       "https://www.googleapis.com/auth/logging.write",
       "https://www.googleapis.com/auth/monitoring",
     ]
-
-    workload_metadata_config {
-      node_metadata = "GKE_METADATA_SERVER"
-    }
   }
 }
