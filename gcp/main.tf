@@ -30,3 +30,7 @@ variable "org_id" {
 output "charlieegan3-cluster-vault-kms-key-id" {
   value = "${module.charlieegan3-cluster.vault_kms_key_id}"
 }
+
+output "charlieegan3-cluster-vault-sa-key" {
+  value = "${module.charlieegan3-cluster.vault_sa_key}"
+}

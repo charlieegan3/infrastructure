@@ -18,13 +18,6 @@ resource "google_service_account" "vault" {
   project    = var.project_id
 }
 
-resource "google_service_account_iam_binding" "vault-pod" {
-  service_account_id = google_service_account.vault.name
-  role               = "roles/iam.serviceAccountTokenCreator"
-
-  members = ["serviceAccount:charlieegan3-cluster.svc.id.goog[vault/vs-vault]"]
-}
-
 resource "google_kms_key_ring" "vault" {
   name     = "vault-key-ring"
   location = "global"
@@ -50,6 +43,14 @@ resource "google_kms_crypto_key_iam_binding" "vault" {
   ]
 }
 
+resource "google_service_account_key" "vault" {
+  service_account_id = google_service_account.vault.name
+}
+
 output "vault_kms_key_id" {
   value = google_kms_crypto_key.vault.self_link
+}
+
+output "vault_sa_key" {
+  value = google_service_account_key.vault.private_key
 }

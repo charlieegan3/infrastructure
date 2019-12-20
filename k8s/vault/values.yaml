@@ -12,6 +12,13 @@ server:
       cpu: 400m
   livenessProbe:
     enabled: true
+  extraEnvironmentVars:
+    GOOGLE_REGION: global
+    GOOGLE_PROJECT: charlieegan3-cluster
+    GOOGLE_APPLICATION_CREDENTIALS: /vault/userconfig/google-application-credentials/key.json
+  extraVolumes:
+  - type: secret
+    name: google-application-credentials
   standalone:
     config: |
       ui = false
