@@ -46,6 +46,14 @@ resource "google_service_account" "default" {
   project      = var.project_id
 }
 
+resource "google_service_account_key" "cronjob" {
+  service_account_id = google_service_account.default.name
+}
+
+output "cronjob_sa_key" {
+  value = google_service_account_key.cronjob.private_key
+}
+
 resource "google_project_iam_binding" "storage_admin" {
   project = var.project_id
   role    = "roles/storage.admin"

@@ -29,7 +29,10 @@ resource "google_project_iam_binding" "query" {
   ]
 }
 
-resource "google_service_account_key" "default" {
+resource "google_service_account_key" "bigquery_uploader" {
   service_account_id = google_service_account.bigquery_uploader.name
 }
 
+output "bigquery_uploader_sa_key" {
+  value = google_service_account_key.bigquery_uploader.private_key
+}

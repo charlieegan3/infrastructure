@@ -1,84 +1,58 @@
-resource "google_service_account" "stackdriver_exporter" {
-  account_id   = "stackdriver-exporter"
-  display_name = "Stackdriver Prometheus Exporter"
+# single account for all monitoring components
+resource "google_service_account" "monitoring" {
+  account_id   = "monitoring"
+  display_name = "Cluster Monitoring Components"
   project      = var.project_id
 }
 
-resource "google_project_iam_binding" "upload" {
+resource "google_service_account_key" "monitoring" {
+  service_account_id = google_service_account.monitoring.name
+}
+
+output "monitoring_sa_key" {
+  value = google_service_account_key.monitoring.private_key
+}
+
+# for stackdriver exporter
+resource "google_project_iam_binding" "monitoring-viewer" {
   project = var.project_id
   role    = "roles/monitoring.viewer"
 
   members = [
-    "serviceAccount:${google_service_account.stackdriver_exporter.email}",
+    "serviceAccount:${google_service_account.monitoring.email}",
   ]
 }
 
-resource "google_service_account_iam_binding" "stackdriver_exporter" {
-  service_account_id = google_service_account.stackdriver_exporter.name
-  role               = "roles/iam.serviceAccountTokenCreator"
-
-  members = ["serviceAccount:charlieegan3-cluster.svc.id.goog[monitoring/stackdriver-exporter]"]
-}
-
-resource "google_service_account" "bigquery-user-readonly" {
-  account_id   = "bigquery-user-readonly"
-  display_name = "BigQuery User (readonly)"
-  project      = var.project_id
-}
-
-resource "google_project_iam_binding" "data-viewer" {
+# for grafana bq datasource
+resource "google_project_iam_binding" "bq-data-viewer" {
   project = var.project_id
   role    = "roles/bigquery.dataViewer"
 
   members = [
-    "serviceAccount:${google_service_account.bigquery-user-readonly.email}",
+    "serviceAccount:${google_service_account.monitoring.email}",
   ]
 }
-
-resource "google_project_iam_binding" "job-user" {
+resource "google_project_iam_binding" "bq-job-user" {
   project = var.project_id
   role    = "roles/bigquery.jobUser"
 
   members = [
-    "serviceAccount:${google_service_account.bigquery-user-readonly.email}",
+    "serviceAccount:${google_service_account.monitoring.email}",
   ]
 }
 
-resource "google_service_account_iam_binding" "bigquery-user" {
-  service_account_id = google_service_account.bigquery-user-readonly.name
-  role               = "roles/iam.serviceAccountTokenCreator"
-
-  members = ["serviceAccount:charlieegan3-cluster.svc.id.goog[monitoring/gf-grafana]"]
-}
-
+# for thanos store
 resource "google_storage_bucket" "thanos-storage" {
   name     = "charlieegan3-cluster-thanos"
   location = "US"
   project  = var.project_id
 }
 
-resource "google_storage_bucket_iam_binding" "thanos-binding" {
+resource "google_storage_bucket_iam_binding" "thanos-object-admin" {
   bucket = "${google_storage_bucket.thanos-storage.name}"
   role   = "roles/storage.objectAdmin"
 
   members = [
-    "serviceAccount:${google_service_account.thanos.email}",
-  ]
-}
-
-resource "google_service_account" "thanos" {
-  account_id = "thanos"
-  project    = var.project_id
-}
-
-resource "google_service_account_iam_binding" "thanos-pod" {
-  service_account_id = google_service_account.thanos.name
-  role               = "roles/iam.serviceAccountTokenCreator"
-
-  # thanos runs as a sidecar in the prometheus pod
-  members = [
-    "serviceAccount:charlieegan3-cluster.svc.id.goog[monitoring/po-promop-prometheus]",
-    "serviceAccount:charlieegan3-cluster.svc.id.goog[monitoring/thanos-store]",
-    "serviceAccount:charlieegan3-cluster.svc.id.goog[monitoring/thanos-compactor]"
+    "serviceAccount:${google_service_account.monitoring.email}",
   ]
 }
