@@ -1,7 +1,3 @@
-serviceAccount:
-  name: stackdriver-exporter
-  # created manually with an includes file
-  create: false
 resources:
   limits:
     cpu: "200m"

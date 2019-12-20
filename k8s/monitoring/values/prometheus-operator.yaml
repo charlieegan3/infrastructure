@@ -9,9 +9,6 @@ defaultRules:
   create: false
 
 prometheus:
-  serviceAccount:
-    create: false
-    name: po-promop-prometheus # find in includes with Workload ID annotation for thanos
   ingress:
     enabled: true
     annotations:

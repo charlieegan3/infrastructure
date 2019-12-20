@@ -93,16 +93,7 @@ local kt =
 
 
 // Extras
-// * create additional sas with annotations for gke workload id
 // * create an ingress for the querier
-local store_sa = serviceaccount.new('thanos-store') +
-                 serviceaccount.mixin.metadata.withAnnotations({
-                   'iam.gke.io/gcp-service-account': 'thanos@charlieegan3-cluster.iam.gserviceaccount.com',
-                 });
-local compactor_sa = serviceaccount.new('thanos-compactor') +
-                     serviceaccount.mixin.metadata.withAnnotations({
-                       'iam.gke.io/gcp-service-account': 'thanos@charlieegan3-cluster.iam.gserviceaccount.com',
-                     });
 local querier_ingress = ingress.new() +
                         {
                           metadata: {
@@ -145,10 +136,8 @@ local querier_ingress = ingress.new() +
 
 // Output the merged configuration of selected components
 { ['thanos-store-' + name]: kt.thanos.store[name] for name in std.objectFields(kt.thanos.store) } +
-{ 'thanos-store-serviceaccount': store_sa } +
 
 { ['thanos-querier-' + name]: kt.thanos.querier[name] for name in std.objectFields(kt.thanos.querier) } +
 { 'thanos-querier-ingress': querier_ingress }
 
-{ ['thanos-compactor-' + name]: kt.thanos.compactor[name] for name in std.objectFields(kt.thanos.compactor) } +
-{ 'thanos-compactor-serviceaccount': compactor_sa }
+{ ['thanos-compactor-' + name]: kt.thanos.compactor[name] for name in std.objectFields(kt.thanos.compactor) }

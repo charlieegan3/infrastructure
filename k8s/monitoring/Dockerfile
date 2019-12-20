@@ -70,7 +70,6 @@ RUN helm template --name=stkexp \
       --namespace=monitoring \
       --values=values/stackdriver-exporter.yaml \
       stackdriver-exporter > /output/stackdriver-exporter.yaml
-RUN cat includes/stackdriver-exporter/*.yaml >> /output/stackdriver-exporter.yaml
 
 # 'render' cloud-billing-exporter
 RUN cat includes/cloud-billing-exporter/*.yaml >> /output/cloud-billing-exporter.yaml
