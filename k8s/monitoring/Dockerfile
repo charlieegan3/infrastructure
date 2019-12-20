@@ -42,6 +42,7 @@ COPY includes includes
 COPY values values
 
 RUN cat includes/namespace.yaml > /output/0-namespace.yaml
+RUN cp includes/google-application-credentials-secret.yaml /output/google.yaml
 
 # render prometheus-operator
 RUN helm template --name=po \
