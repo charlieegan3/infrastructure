@@ -1,10 +1,10 @@
 images:
-  tracker:  charlieegan3/music-play-tracker:411b76f5348fcffa40bb9bc18af5a757
+  tracker: charlieegan3/music-play-tracker:5a92f352d1fabc380a69011bb4235849
   site: charlieegan3/music-hugo-rebuilder:74401262db95fa1112b76344858951c8
 
 cronjobs:
 - name: sync-spotify
-  schedule: "*/15 * * * *"
+  schedule: "* * * * *"
   command: spotify
 - name: sync-youtube
   schedule: "13,33,53 * * * *"

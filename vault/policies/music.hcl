@@ -1,3 +1,3 @@
-path "secret/music/main" {
+path "secret/music/*" {
   capabilities = ["read"]
 }

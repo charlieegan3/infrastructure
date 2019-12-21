@@ -59,7 +59,7 @@ vault write auth/kubernetes/role/serializer \
 vault policy write serializer policies/serializer.hcl
 
 vault write auth/kubernetes/role/music \
-  bound_service_account_names=music-sync \
+  bound_service_account_names=default \
   bound_service_account_namespaces=music \
   policies=music \
   ttl=1h
