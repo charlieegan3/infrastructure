@@ -1,9 +1,7 @@
-# taken from
-# https://github.com/helm/charts/blob/daff73c99fcb9e37066008ff0322fe300b8ac049/stable/oauth2-proxy/templates/deployment.yaml
-# customsizations:
-# - remove env vars
-# - add vault init containers
----
+# from https://raw.githubusercontent.com/helm/charts/daff73c99fcb9e37066008ff0322fe300b8ac049/stable/oauth2-proxy/templates/deployment.yaml
+# changes:
+# * remove the setting of env
+# * disable the auto setting of the mount point as it's wrong for vault
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
@@ -39,42 +37,6 @@ spec:
     {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
     {{- end }}
-      initContainers:
-      - name: vault-authenticator
-        image: registry.hub.docker.com/sethvargo/vault-kubernetes-authenticator:0.1.0
-        volumeMounts:
-        - name: vault-token
-          mountPath: /home/vault
-        env:
-        - name: TOKEN_DEST_PATH
-          value: /home/vault/.vault-token
-        - name: VAULT_ADDR
-          value: "http://vs-vault.vault:8200"
-        - name: VAULT_ROLE
-          value: auth
-      - name: consul-template
-        image: registry.hub.docker.com/hashicorp/consul-template:0.19.5-scratch
-        command:
-        - /consul-template
-        - -config
-        - /etc/consul-template/config.hcl
-        - -log-level
-        - debug
-        - -once
-        volumeMounts:
-        - name: secrets
-          mountPath: /etc/oauth2_proxy
-        - name: vault-token
-          mountPath: /home/vault
-        - name: consul-template-config
-          mountPath: /etc/consul-template
-        env:
-        - name: HOME
-          value: /home/vault
-        - name: VAULT_ADDR
-          value: "http://vs-vault.vault:8200"
-        - name: VAULT_SKIP_VERIFY
-          value: "true"
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -89,7 +51,8 @@ spec:
           {{- end }}
         {{- end }}
         {{- if or .Values.config.existingConfig .Values.config.configFile }}
-          - --config=/etc/oauth2_proxy/oauth2_proxy.cfg
+        # disabled as we set this outselves
+        # - --config=/etc/oauth2_proxy/oauth2_proxy.cfg
         {{- end }}
         {{- if .Values.authenticatedEmailsFile.enabled }}
         {{- if .Values.authenticatedEmailsFile.template }}
@@ -104,22 +67,23 @@ spec:
           - --google-service-account-json=/google/service-account.json
         {{- end }}
         {{- end }}
-#       env:
-#       - name: OAUTH2_PROXY_CLIENT_ID
-#         valueFrom:
-#           secretKeyRef:
-#             name:  {{ template "oauth2-proxy.secretName" . }}
-#             key: client-id
-#       - name: OAUTH2_PROXY_CLIENT_SECRET
-#         valueFrom:
-#           secretKeyRef:
-#             name:  {{ template "oauth2-proxy.secretName" . }}
-#             key: client-secret
-#       - name: OAUTH2_PROXY_COOKIE_SECRET
-#         valueFrom:
-#           secretKeyRef:
-#             name:  {{ template "oauth2-proxy.secretName" . }}
-#             key: cookie-secret
+       # use config file from vault instead
+       #env:
+       #- name: OAUTH2_PROXY_CLIENT_ID
+       #  valueFrom:
+       #    secretKeyRef:
+       #      name:  {{ template "oauth2-proxy.secretName" . }}
+       #      key: client-id
+       #- name: OAUTH2_PROXY_CLIENT_SECRET
+       #  valueFrom:
+       #    secretKeyRef:
+       #      name:  {{ template "oauth2-proxy.secretName" . }}
+       #      key: client-secret
+       #- name: OAUTH2_PROXY_COOKIE_SECRET
+       #  valueFrom:
+       #    secretKeyRef:
+       #      name:  {{ template "oauth2-proxy.secretName" . }}
+       #      key: cookie-secret
         ports:
           - containerPort: 4180
             name: http
@@ -145,8 +109,6 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
-        - mountPath: /etc/oauth2_proxy
-          name: secrets
 {{- with .Values.config.google }}
 {{- if and .adminEmail (or .serviceAccountJson .existingSecret) }}
         - name: google-secret
@@ -154,21 +116,16 @@ spec:
           readOnly: true
 {{- end }}
 {{- end }}
+{{- if or .Values.config.existingConfig .Values.config.configFile }}
+        - mountPath: /etc/oauth2_proxy
+          name: configmain
+{{- end }}
 {{- if .Values.authenticatedEmailsFile.enabled }}
         - mountPath: /etc/oauth2-proxy
           name: configaccesslist
           readOnly: true
 {{- end }}
       volumes:
-      - name: secrets
-        emptyDir:
-          medium: Memory
-      - name: vault-token
-        emptyDir:
-          medium: Memory
-      - name: consul-template-config
-        configMap:
-          name: consul-template
 {{- with .Values.config.google }}
 {{- if and .adminEmail (or .serviceAccountJson .existingSecret) }}
       - name: google-secret

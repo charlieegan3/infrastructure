@@ -9,6 +9,21 @@ extraArgs:
   cookie-domain: .charlieegan3.com
   whitelist-domain: .charlieegan3.com
   redirect-url: "https://auth.charlieegan3.com/oauth2/callback"
+  config: /vault/secrets/oauth2_proxy.cfg
+
+podAnnotations:
+  vault.hashicorp.com/agent-inject: "true"
+  vault.hashicorp.com/role: "auth"
+  vault.hashicorp.com/agent-pre-populate-only: "true"
+  vault.hashicorp.com/agent-inject-secret-oauth2_proxy.cfg: "secret/auth/main"
+  vault.hashicorp.com/agent-inject-template-oauth2_proxy.cfg: |
+    {{- with secret "secret/auth/main" -}}
+    {{- .Data.text -}}
+    {{- end -}}
+
+config:
+  # but this is not created to use the values from vault instead
+  existingSecret: true
 
 ingress:
   enabled: true

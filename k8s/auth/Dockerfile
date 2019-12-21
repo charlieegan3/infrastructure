@@ -22,9 +22,6 @@ COPY . .
 # create the application's ns
 RUN cat includes/oauth2-proxy/namespace.yaml > /output/oauth2-proxy.yaml
 
-# create the consul config
-RUN cat includes/consul-template-config.yaml > /output/consul-template.yaml
-
 # overwrite the deployment template to allow customiszations
 RUN cp replacements/deployment.yaml oauth2-proxy/templates/deployment.yaml
 
