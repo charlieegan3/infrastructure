@@ -120,3 +120,10 @@ vault write auth/kubernetes/role/vault-secrets-operator \
   policies=vault-secrets-operator \
   ttl=1h
 vault policy write vault-secrets-operator policies/vault-secrets-operator.hcl
+
+vault write auth/kubernetes/role/flashcards-api \
+  bound_service_account_names=default \
+  bound_service_account_namespaces=flashcards \
+  policies=flashcards-api \
+  ttl=1h
+vault policy write flashcards-api policies/flashcards-api.hcl

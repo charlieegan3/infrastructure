@@ -5,24 +5,34 @@ metadata:
   namespace: flashcards
 spec:
   schedule: "*/10 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
   jobTemplate:
     metadata:
       labels:
         cronjob: reload-cards
     spec:
       template:
+        metadata:
+          annotations:
+            vault.hashicorp.com/agent-inject: "true"
+            vault.hashicorp.com/role: "flashcards-api"
+            vault.hashicorp.com/agent-pre-populate-only: "true"
+            vault.hashicorp.com/agent-inject-secret-env: "secret/flashcards-api/main"
+            vault.hashicorp.com/agent-inject-template-env: |
+              {{- with secret "secret/flashcards-api/main" -}}
+              {{- .Data.env -}}
+              {{- end -}}
         spec:
           restartPolicy: OnFailure
           volumes:
-          - name: config
-            secret:
-              secretName: config
           containers:
           - name: reload-cards
-            image: charlieegan3/flashcards:9a50d240334a2c2514c387bbec4c2d1d
+            image: "charlieegan3/flashcards:a9c672dc39e9de0c10206c588257d8b9"
+            env:
+            - name: ENV_PATH
+              value: /vault/secrets/env
             command:
             - rake
             - reload:cards
-            volumeMounts:
-            - name: config
-              mountPath: /etc/rails/config

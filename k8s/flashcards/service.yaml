@@ -6,19 +6,25 @@ metadata:
   namespace: flashcards
 spec:
   template:
+    metadata:
+      annotations:
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/role: "flashcards-api"
+        vault.hashicorp.com/agent-pre-populate-only: "true"
+        vault.hashicorp.com/agent-inject-secret-env: "secret/flashcards-api/main"
+        vault.hashicorp.com/agent-inject-template-env: |
+          {{- with secret "secret/flashcards-api/main" -}}
+          {{- .Data.env -}}
+          {{- end -}}
     spec:
-      volumes:
-      - name: config
-        secret:
-          secretName: config
       containers:
-      - image: charlieegan3/flashcards:2f85aa1db99f44f3cb14b8846fc1d122
+      - image: "charlieegan3/flashcards:a9c672dc39e9de0c10206c588257d8b9"
         ports:
         - name: http1
           containerPort: 3000
-        volumeMounts:
-        - name: config
-          mountPath: /etc/rails/config
+        env:
+        - name: ENV_PATH
+          value: /vault/secrets/env
         resources:
           limits:
             cpu: "2"
