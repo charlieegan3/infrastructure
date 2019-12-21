@@ -6,19 +6,22 @@ metadata:
   namespace: clockify
 spec:
   template:
+    metadata:
+      annotations:
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/role: "clockify"
+        vault.hashicorp.com/agent-pre-populate-only: "true"
+        vault.hashicorp.com/agent-inject-secret-config.json: "secret/clockify/main"
+        vault.hashicorp.com/agent-inject-template-config.json: |
+          {{- with secret "secret/clockify/main" -}}
+          {{- .Data.config -}}
+          {{- end -}}
     spec:
-      volumes:
-      - name: config
-        secret:
-          secretName: config
       containers:
       - image: "docker.io/charlieegan3/clockify:95f7a3813d2c020de22eadf1d1da3160"
         ports:
         - name: http1
           containerPort: 80
-        volumeMounts:
-        - name: config
-          mountPath: /usr/share/nginx/html/data
         resources:
           limits:
             cpu: "20m"
@@ -30,4 +33,8 @@ spec:
         - sh
         - -c
         - |
-          mkdir -p /var/log/nginx && exec nginx -g "daemon off;"
+          find /vault && \
+          mkdir /usr/share/nginx/html/data && \
+          cp /vault/secrets/config.json /usr/share/nginx/html/data/ && \
+          mkdir -p /var/log/nginx && \
+          exec nginx -g "daemon off;"
