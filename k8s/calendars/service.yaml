@@ -6,11 +6,17 @@ metadata:
   namespace: calendars
 spec:
   template:
+    metadata:
+      annotations:
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/role: "calendars"
+        vault.hashicorp.com/agent-pre-populate-only: "true"
+        vault.hashicorp.com/agent-inject-secret-url: "secret/calendars/main"
+        vault.hashicorp.com/agent-inject-template-url: |
+          {{- with secret "secret/calendars/main" -}}
+          {{- .Data.url -}}
+          {{- end -}}
     spec:
-      volumes:
-      - name: calendar-url
-        secret:
-          secretName: calendar-url
       containers:
       - image: "docker.io/charlieegan3/calendars:293d5e00af617205451a44b154bbe9ea"
         ports:
@@ -18,10 +24,7 @@ spec:
           containerPort: 8080
         env:
         - name: CALENDAR_URL_PATH
-          value: /etc/secrets/url
-        volumeMounts:
-        - name: calendar-url
-          mountPath: /etc/secrets
+          value: /vault/secrets/url
         resources:
           limits:
             cpu: "20m"
