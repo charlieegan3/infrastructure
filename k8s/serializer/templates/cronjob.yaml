@@ -15,44 +15,22 @@ spec:
         cronjob: "{{ $job.name }}"
     spec:
       template:
+        metadata:
+          annotations:
+            vault.hashicorp.com/agent-inject: "true"
+            vault.hashicorp.com/role: "serializer"
+            vault.hashicorp.com/agent-pre-populate-only: "true"
+            vault.hashicorp.com/agent-inject-secret-env: "secret/serializer/main"
+            vault.hashicorp.com/agent-inject-template-env: |
+              {{`
+              {{- with secret "secret/serializer/main" -}}
+              DATABASE_URL={{ .Data.DATABASE_URL }}
+              SECRET_KEY_BASE={{ .Data.SECRET_KEY_BASE }}
+              SECRET_TOKEN={{ .Data.SECRET_TOKEN }}
+              {{- end -}}
+              `}}
         spec:
           restartPolicy: OnFailure
-          initContainers:
-          - name: vault-authenticator
-            image: registry.hub.docker.com/sethvargo/vault-kubernetes-authenticator:0.1.0
-            volumeMounts:
-            - name: vault-token
-              mountPath: /home/vault
-            env:
-            - name: TOKEN_DEST_PATH
-              value: /home/vault/.vault-token
-            - name: VAULT_ADDR
-              value: "http://vs-vault.vault:8200"
-            - name: VAULT_ROLE
-              value: serializer
-          - name: consul-template
-            image: registry.hub.docker.com/hashicorp/consul-template:0.19.5-scratch
-            command:
-            - /consul-template
-            - -config
-            - /etc/consul-template/config.hcl
-            - -log-level
-            - debug
-            - -once
-            volumeMounts:
-            - name: secrets
-              mountPath: /etc/secrets
-            - name: vault-token
-              mountPath: /home/vault
-            - name: consul-template-config
-              mountPath: /etc/consul-template
-            env:
-            - name: HOME
-              value: /home/vault
-            - name: VAULT_ADDR
-              value: "http://vs-vault.vault:8200"
-            - name: VAULT_SKIP_VERIFY
-              value: "true"
           containers:
           - image: "{{ $.Values.images.rails }}"
             name: "{{ $job.name }}"
@@ -62,17 +40,4 @@ spec:
             envFrom:
             - configMapRef:
                 name: serializer-config
-            volumeMounts:
-            - mountPath: /etc/rails/
-              name: secrets
-          volumes:
-          - name: secrets
-            emptyDir:
-              medium: Memory
-          - name: vault-token
-            emptyDir:
-              medium: Memory
-          - name: consul-template-config
-            configMap:
-              name: consul-template
 {{- end }}

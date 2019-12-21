@@ -1,5 +1,5 @@
 images:
-  rails: charlieegan3/serializer:426f9a9b5106526d25d4aaf8b46af21b
+  rails: charlieegan3/serializer:2714f6a6f58582cfbe1b5349616d1583
 
 cronjobs:
   - name: serializer-items-active
