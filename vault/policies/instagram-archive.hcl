@@ -1,3 +1,3 @@
-path "secret/instagram-archive/main" {
+path "secret/instagram-archive/*" {
   capabilities = ["read"]
 }

@@ -80,7 +80,7 @@ vault write auth/kubernetes/role/drive-backup \
 vault policy write drive-backup policies/drive-backup.hcl
 
 vault write auth/kubernetes/role/instagram-archive \
-  bound_service_account_names=instagram-archive-refresh \
+  bound_service_account_names=default  \
   bound_service_account_namespaces=instagram-archive \
   policies=instagram-archive \
   ttl=1h
