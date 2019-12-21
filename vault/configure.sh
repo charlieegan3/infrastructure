@@ -114,13 +114,6 @@ vault write auth/kubernetes/role/personal-website \
   ttl=1h
 vault policy write personal-website policies/personal-website.hcl
 
-vault write auth/kubernetes/role/vault-secrets-operator \
-  bound_service_account_names=vault-secrets-operator \
-  bound_service_account_namespaces=vault-secrets-operator \
-  policies=vault-secrets-operator \
-  ttl=1h
-vault policy write vault-secrets-operator policies/vault-secrets-operator.hcl
-
 vault write auth/kubernetes/role/flashcards-api \
   bound_service_account_names=default \
   bound_service_account_namespaces=flashcards \
