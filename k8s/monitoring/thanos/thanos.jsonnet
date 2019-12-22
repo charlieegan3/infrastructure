@@ -52,7 +52,7 @@ local kt =
                     args: [
                       'compact',
                       '--wait',
-                      '--retention.resolution-raw=2d',
+                      '--retention.resolution-raw=1h',
                       '--retention.resolution-5m=30d',
                       '--retention.resolution-1h=180d',
                       '--objstore.config=$(OBJSTORE_CONFIG)',
