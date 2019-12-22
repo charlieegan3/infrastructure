@@ -7,7 +7,6 @@ metadata:
     app: {{ include "personal-website.name" $ }}
   namespace: {{ include "personal-website.name" $ }}
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: {{ include "personal-website.name" $ }}
@@ -15,17 +14,6 @@ spec:
     metadata:
       labels:
         app: {{ include "personal-website.name" $ }}
-      annotations:
-        vault.hashicorp.com/agent-inject: "true"
-        vault.hashicorp.com/role: "personal-website"
-        vault.hashicorp.com/agent-pre-populate-only: "true"
-        vault.hashicorp.com/agent-inject-secret-env: "secret/personal-website/main"
-        vault.hashicorp.com/agent-inject-template-env: |
-          {{`
-          {{- with secret "secret/personal-website/main" -}}
-          {{- .Data.text -}}
-          {{- end -}}
-          `}}
     spec:
       tolerations:
       - key: ingress
@@ -34,40 +22,10 @@ spec:
       nodeSelector:
         ingress: "true"
       volumes:
-      - name: shared-app-dir
-        emptyDir: {}
-      initContainers:
-      - name: volume-init
-        image: {{ .Values.images.web }}
-        command:
-        - sh
-        - -c
-        - "mv /usr/share/nginx/html/* /shared"
-        volumeMounts:
-        - mountPath: /shared
-          name: shared-app-dir
+      - name: status-json
+        configMap:
+          name: status-json
       containers:
-      - name: json-reloader
-        image: {{ .Values.images.json }}
-        command:
-        - /statusUpdater
-        - --refresh=true
-        - --repeat=true
-        - --interval=600
-        - --output=/shared/status.json
-        resources:
-          limits:
-            cpu: "200m"
-            memory: "50Mi"
-          requests:
-            cpu: "10m"
-            memory: "10Mi"
-        env:
-        - name: ENV_PATH
-          value: /vault/secrets/env
-        volumeMounts:
-        - mountPath: /shared
-          name: shared-app-dir
       - name: web
         image: {{ .Values.images.web }}
         ports:
@@ -81,5 +39,5 @@ spec:
             cpu: "10m"
             memory: "10Mi"
         volumeMounts:
-        - mountPath: /usr/share/nginx/html
-          name: shared-app-dir
+        - name: status-json
+          mountPath: /usr/share/nginx/html/data

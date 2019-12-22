@@ -1,0 +1,66 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: status-json-refresh
+spec:
+  schedule: "*/10 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          annotations:
+            vault.hashicorp.com/agent-inject: "true"
+            vault.hashicorp.com/role: "personal-website"
+            vault.hashicorp.com/agent-pre-populate-only: "true"
+            vault.hashicorp.com/agent-inject-secret-env: "secret/personal-website/main"
+            vault.hashicorp.com/agent-inject-template-env: |
+              {{`
+              {{- with secret "secret/personal-website/main" -}}
+              {{- .Data.text -}}
+              {{- end -}}
+              `}}
+        spec:
+          restartPolicy: OnFailure
+          serviceAccountName: config-map-creator
+          volumes:
+          - name: shared
+            emptyDir: {}
+          containers:
+          - name: json-reloader
+            image: {{ .Values.images.json }}
+            command:
+            - /statusUpdater
+            - --refresh=true
+            - --output=/shared/status.json
+            env:
+            - name: ENV_PATH
+              value: /vault/secrets/env
+            resources:
+              limits:
+                cpu: "200m"
+                memory: "50Mi"
+              requests:
+                cpu: "10m"
+                memory: "10Mi"
+            volumeMounts:
+            - name: shared
+              mountPath: /shared
+          - name: create-config-map
+            image: gcr.io/google_containers/hyperkube:v1.15.5
+            command:
+            - /bin/sh
+            - -c
+            - |-
+              while [ ! -f /shared/status.json ]
+              do
+                echo "status not found, waiting"
+                sleep 1
+              done
+              kubectl create configmap status-json -n personal-website --from-file=/shared/status.json -o yaml --dry-run > configmap.yaml
+              kubectl apply -f configmap.yaml
+            volumeMounts:
+            - name: shared
+              mountPath: /shared

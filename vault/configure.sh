@@ -108,7 +108,7 @@ vault write auth/kubernetes/role/monitoring \
 vault policy write monitoring policies/monitoring.hcl
 
 vault write auth/kubernetes/role/personal-website \
-  bound_service_account_names=default \
+  bound_service_account_names=default,config-map-creator \
   bound_service_account_namespaces=personal-website \
   policies=personal-website \
   ttl=1h
