@@ -11,7 +11,7 @@ spec:
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
   concurrencyPolicy: Forbid
-  schedule: "0 0,12,18 * * *"
+  schedule: "33 */3 * * *"
   jobTemplate:
     metadata:
       labels:
