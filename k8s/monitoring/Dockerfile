@@ -40,9 +40,9 @@ RUN helm repo update && helm fetch stable/stackdriver-exporter --version=$CHART_
 RUN mkdir /output
 COPY includes includes
 COPY values values
+COPY overrides overrides
 
 RUN cat includes/namespace.yaml > /output/0-namespace.yaml
-RUN cp includes/google-application-credentials-secret.yaml /output/google.yaml
 
 # render prometheus-operator
 RUN helm template --name=po \
@@ -67,13 +67,11 @@ RUN helm template --name=ksm \
 RUN cat includes/kube-state-metrics/*.yaml >> /output/kube-state-metrics.yaml
 
 # render stackdriver-exporter
+RUN cp overrides/stackdriver-exporter/deployment.yaml stackdriver-exporter/templates/deployment.yaml
 RUN helm template --name=stkexp \
       --namespace=monitoring \
       --values=values/stackdriver-exporter.yaml \
       stackdriver-exporter > /output/stackdriver-exporter.yaml
-
-# 'render' cloud-billing-exporter
-RUN cat includes/cloud-billing-exporter/*.yaml >> /output/cloud-billing-exporter.yaml
 
 # render thanos deployment
 COPY thanos thanos

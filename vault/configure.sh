@@ -105,6 +105,11 @@ vault write auth/kubernetes/role/monitoring \
   bound_service_account_namespaces=monitoring \
   policies=monitoring \
   ttl=1h
+vault write auth/kubernetes/role/monitoring \
+  bound_service_account_names=default \
+  bound_service_account_namespaces=monitoring \
+  policies=monitoring \
+  ttl=1h
 vault policy write monitoring policies/monitoring.hcl
 
 vault write auth/kubernetes/role/personal-website \

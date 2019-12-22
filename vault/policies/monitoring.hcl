@@ -1,3 +1,3 @@
-path "secret/monitoring/alertmanager-config" {
+path "secret/monitoring/*" {
   capabilities = ["read"]
 }

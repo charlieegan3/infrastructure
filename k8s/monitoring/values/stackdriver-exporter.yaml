@@ -10,9 +10,17 @@ serviceMonitor:
   interval: 12h
   namespace: monitoring
 stackdriver:
-  serviceAccountSecret: stackdriver-service-account
   projectId: charlieegan3-cluster
   metrics:
     interval: 12h
     typePrefixes: "compute.googleapis.com,\
                    storage.googleapis.com"
+annotations:
+  vault.hashicorp.com/agent-inject: "true"
+  vault.hashicorp.com/role: "monitoring"
+  vault.hashicorp.com/agent-pre-populate-only: "true"
+  vault.hashicorp.com/agent-inject-secret-key.json: "secret/monitoring/google"
+  vault.hashicorp.com/agent-inject-template-key.json: |
+    {{- with secret "secret/monitoring/google" -}}
+    {{- .Data.key -}}
+    {{- end -}}
