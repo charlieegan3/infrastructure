@@ -77,6 +77,12 @@ local kt =
                 serviceAccountName: 'thanos-store',
                 containers: [
                   super.containers[0] {
+                    env+: [
+                      {
+                        name: 'GOOGLE_APPLICATION_CREDENTIALS',
+                        value: '/vault/secrets/key.json',
+                      },
+                    ],
                     resources+: {
                       requests: { cpu: '100m', memory: '100Mi' },
                       limits: { cpu: '1', memory: '1Gi' },

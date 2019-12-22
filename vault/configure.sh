@@ -101,12 +101,7 @@ vault write auth/kubernetes/role/finance \
 vault policy write finance policies/finance.hcl
 
 vault write auth/kubernetes/role/monitoring \
-  bound_service_account_names=alertmanager-config-creator \
-  bound_service_account_namespaces=monitoring \
-  policies=monitoring \
-  ttl=1h
-vault write auth/kubernetes/role/monitoring \
-  bound_service_account_names=default \
+  bound_service_account_names=default,thanos-store,alertmanager-config-creator,po-promop-prometheus,thanos-obj-store-creator \
   bound_service_account_namespaces=monitoring \
   policies=monitoring \
   ttl=1h

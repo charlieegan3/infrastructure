@@ -2,7 +2,7 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: alertmanager-config-creator
+  name: thanos-obj-store-creator
   namespace: monitoring
 spec:
   concurrencyPolicy: Forbid
@@ -12,7 +12,7 @@ spec:
   jobTemplate:
     metadata:
       labels:
-        cronjob: alertmanager-config-creator
+        cronjob: thanos-obj-store-creator
     spec:
       template:
         metadata:
@@ -20,14 +20,14 @@ spec:
             vault.hashicorp.com/agent-inject: "true"
             vault.hashicorp.com/role: "monitoring"
             vault.hashicorp.com/agent-pre-populate-only: "true"
-            vault.hashicorp.com/agent-inject-secret-alertmanager.yaml: "secret/monitoring/alertmanager-config"
-            vault.hashicorp.com/agent-inject-template-alertmanager.yaml: |
-              {{- with secret "secret/monitoring/alertmanager-config" -}}
+            vault.hashicorp.com/agent-inject-secret-thanos.yaml: "secret/monitoring/thanos-config"
+            vault.hashicorp.com/agent-inject-template-thanos.yaml: |
+              {{- with secret "secret/monitoring/thanos-config" -}}
               {{- .Data.text -}}
               {{- end -}}
         spec:
           restartPolicy: Never
-          serviceAccount: alertmanager-config-creator
+          serviceAccount: thanos-obj-store-creator
           containers:
           - name: create-config-map
             image: gcr.io/google_containers/hyperkube:v1.15.5
@@ -35,8 +35,8 @@ spec:
             - /bin/sh
             - -c
             - |-
-              kubectl create secret generic alertmanager-po-promop-alertmanager \
-                --from-file=/vault/secrets/alertmanager.yaml \
+              kubectl create secret generic thanos-objstore-config \
+                --from-file=/vault/secrets/thanos.yaml \
                 -n monitoring \
                 -o yaml \
                 --dry-run > secret.yaml && \
@@ -45,7 +45,7 @@ spec:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: alertmanager-config-creator
+  name: thanos-obj-store-creator
   namespace: monitoring
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -61,11 +61,11 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: create-secrets-alertmanager
+  name: create-secrets-thanos
   namespace: monitoring
 subjects:
 - kind: ServiceAccount
-  name: alertmanager-config-creator
+  name: thanos-obj-store-creator
   namespace: monitoring
 roleRef:
   kind: Role
