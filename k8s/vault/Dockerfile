@@ -17,7 +17,7 @@ ENV version 0.3.0
 RUN curl -LO https://github.com/hashicorp/vault-helm/archive/v$version.zip
 RUN unzip v$version.zip && mv vault-helm-$version/ chart
 
-COPY values.yaml ./
+COPY values-secret.yaml ./values.yaml
 COPY additional ./additional
 RUN helm template chart \
   --name=vs \
