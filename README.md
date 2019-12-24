@@ -8,7 +8,8 @@ and side projects.
 
 * [GCP Terraform Config](./gcp/README.md)
 * [k8s Config](./k8s/README.md)
-  * [Vault Config](./k8s/vault/config/README.md)
+* [Vault Config](./vault/config/README.md)
+* [PI Cluster](./pi-cluster/README.md)
 
 ## TODO
 
