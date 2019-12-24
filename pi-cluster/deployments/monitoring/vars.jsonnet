@@ -6,7 +6,7 @@
   modules: [
     {
       name: 'armExporter',
-      enabled: false,
+      enabled: true,
       file: import 'arm_exporter.jsonnet',
     },
     {

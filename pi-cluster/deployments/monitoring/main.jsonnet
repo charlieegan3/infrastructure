@@ -21,14 +21,15 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet')
 // Generate core modules
 { ['00namespace-' + name]: kp.kubePrometheus[name] for name in std.objectFields(kp.kubePrometheus) }
 { ['0prometheus-operator-' + name]: kp.prometheusOperator[name] for name in std.objectFields(kp.prometheusOperator) }
-{ ['prometheus-adapter-' + name]: kp.prometheusAdapter[name] for name in std.objectFields(kp.prometheusAdapter) }
+// { ['prometheus-adapter-' + name]: kp.prometheusAdapter[name] for name in std.objectFields(kp.prometheusAdapter) }
 { ['prometheus-' + name]: kp.prometheus[name] for name in std.objectFields(kp.prometheus) }
-{ ['alertmanager-' + name]: kp.alertmanager[name] for name in std.objectFields(kp.alertmanager) }
-{ ['kube-state-metrics-' + name]: kp.kubeStateMetrics[name] for name in std.objectFields(kp.kubeStateMetrics) }
+// { ['alertmanager-' + name]: kp.alertmanager[name] for name in std.objectFields(kp.alertmanager) }
+// { ['kube-state-metrics-' + name]: kp.kubeStateMetrics[name] for name in std.objectFields(kp.kubeStateMetrics) }
 { ['node-exporter-' + name]: kp.nodeExporter[name] for name in std.objectFields(kp.nodeExporter) }
-{ ['grafana-' + name]: kp.grafana[name] for name in std.objectFields(kp.grafana) }
-{ ['ingress-' + name]: kp.ingress[name] for name in std.objectFields(kp.ingress) }
-{ ['smtp-server-' + name]: kp.smtpServer[name] for name in std.objectFields(kp.smtpServer) }
+// { ['grafana-' + name]: kp.grafana[name] for name in std.objectFields(kp.grafana) }
+// TODO enable ingress
+// { ['ingress-' + name]: kp.ingress[name] for name in std.objectFields(kp.ingress) }
+// { ['smtp-server-' + name]: kp.smtpServer[name] for name in std.objectFields(kp.smtpServer) }
 
 {  // Dynamically generate additional modules from vars.jsonnet
   [std.asciiLower(module.name) + '-' + name]: kp[module.name][name]
