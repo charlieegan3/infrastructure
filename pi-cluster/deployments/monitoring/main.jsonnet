@@ -2,7 +2,8 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet')
            + (import 'kube-prometheus/kube-prometheus-anti-affinity.libsonnet')
            + (import 'kube-prometheus/kube-prometheus-kops-coredns.libsonnet')
            + (import 'kube-prometheus/kube-prometheus-kubeadm.libsonnet')
-           + (import 'kube-prometheus/kube-prometheus-thanos-sidecar.libsonnet')
+           // Use custom sidecar config with arm image
+           + (import 'thanos-sidecar.jsonnet')
            // Use http Kubelet targets. Comment to revert to https
            + (import 'kube-prometheus/kube-prometheus-insecure-kubelet.libsonnet')
            // Include the arm exporter

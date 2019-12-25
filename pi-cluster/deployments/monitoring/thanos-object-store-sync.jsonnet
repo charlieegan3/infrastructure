@@ -9,7 +9,7 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
              },
              spec: {
                concurrencyPolicy: 'Forbid',
-               schedule: '* * * * *',
+               schedule: '*/10 * * * *',
                successfulJobsHistoryLimit: 1,
                failedJobsHistoryLimit: 1,
                jobTemplate: {
@@ -26,9 +26,9 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
                          'vault.hashicorp.com/role': 'monitoring',
                          'vault.hashicorp.com/agent-pre-populate-only': 'true',
                          'vault.hashicorp.com/agent-inject-secret-thanos.yaml':
-                           'secret/monitoring/thanos-config',
+                           'secret/monitoring/thanos-store-config',
                          'vault.hashicorp.com/agent-inject-template-thanos.yaml': |||
-                           {{- with secret "secret/monitoring/thanos-config" -}}
+                           {{- with secret "secret/monitoring/thanos-store-config" -}}
                            {{- .Data.text -}}
                            {{- end -}}
                          |||,
@@ -45,7 +45,7 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
                              '/bin/sh',
                              '-c',
                              |||
-                               kubectl create secret generic thanos-objstore-config \
+                               kubectl create secret generic thanos-objectstorage \
                                --from-file=/vault/secrets/thanos.yaml \
                                -n monitoring \
                                -o yaml \
