@@ -5,15 +5,15 @@ local servicePort = k.core.v1.service.mixin.spec.portsType;
 {
   _config+:: {
     versions+:: {
-      thanos: '176273b85efae4b87349815e941dcd1d',
+      thanos: '4495d094499d5aba093d12bb0ff63df1',
     },
     imageRepos+:: {
       thanos: 'charlieegan3/thanos-arm',
     },
     thanos+:: {
       objectStorageConfig: {
-        key: 'thanos.yaml',  // How the file inside the secret is called
-        name: 'thanos-objectstorage',  // This is the name of your Kubernetes secret with the config
+        key: 'thanos.yaml',
+        name: 'thanos-objectstorage',
       },
     },
   },
