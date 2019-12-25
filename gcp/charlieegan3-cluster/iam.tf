@@ -47,9 +47,24 @@ resource "google_storage_bucket" "thanos-storage" {
   location = "US"
   project  = var.project_id
 }
+# pi cluster thanos
+resource "google_storage_bucket" "thanos-store" {
+  name     = "charlieegan3-cluster-thanos-store"
+  location = "EU"
+  project  = var.project_id
+}
 
 resource "google_storage_bucket_iam_binding" "thanos-object-admin" {
   bucket = "${google_storage_bucket.thanos-storage.name}"
+  role   = "roles/storage.objectAdmin"
+
+  members = [
+    "serviceAccount:${google_service_account.monitoring.email}",
+  ]
+}
+
+resource "google_storage_bucket_iam_binding" "thanos-store-object-admin" {
+  bucket = "${google_storage_bucket.thanos-store.name}"
   role   = "roles/storage.objectAdmin"
 
   members = [

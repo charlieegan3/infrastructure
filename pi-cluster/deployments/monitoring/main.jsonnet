@@ -1,5 +1,3 @@
-local utils = import 'utils.libsonnet';
-
 local kp = (import 'kube-prometheus/kube-prometheus.libsonnet')
            + (import 'kube-prometheus/kube-prometheus-anti-affinity.libsonnet')
            + (import 'kube-prometheus/kube-prometheus-kops-coredns.libsonnet')
@@ -16,6 +14,8 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet')
            // Load image versions last to override default from modules
            + (import 'image_sources_versions.jsonnet');
 
+local toos = import 'thanos-object-store-sync.jsonnet';
+
 // Generate core modules
 { ['00namespace-' + name]: kp.kubePrometheus[name] for name in std.objectFields(kp.kubePrometheus) }
 { ['0prometheus-operator-' + name]: kp.prometheusOperator[name] for name in std.objectFields(kp.prometheusOperator) }
@@ -27,3 +27,5 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet')
 // TODO enable ingress
 // { ['ingress-' + name]: kp.ingress[name] for name in std.objectFields(kp.ingress) }
 { ['armExporter-' + name]: kp.armExporter[name] for name in std.objectFields(kp.armExporter) }
+
+{ ['thanos-object-store-sync-' + name]: toos[name] for name in std.objectFields(toos) }
