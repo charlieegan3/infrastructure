@@ -1,6 +1,6 @@
 local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
-local vars = import 'vars.jsonnet';
 local utils = import 'utils.libsonnet';
+local vars = import 'vars.jsonnet';
 
 {
   _config+:: {
@@ -33,39 +33,13 @@ local utils = import 'utils.libsonnet';
       cpuPerNode: '2m',
       memoryPerNode: '30Mi',
     },
-
-    // Add custom Grafana dashboards
-    grafanaDashboards+:: {
-      'kubernetes-cluster-dashboard.json': (import 'grafana-dashboards/kubernetes-cluster-dashboard.json'),
-      'prometheus-dashboard.json': (import 'grafana-dashboards/prometheus-dashboard.json'),
-      'coredns-dashboard.json': (import 'grafana-dashboards/coredns-dashboard.json'),
-    },
-
-    grafana+:: {
-      config: {
-        sections: {
-          session: { provider: 'memory' },
-          'auth.basic': { enabled: false },
-          'auth.anonymous': { enabled: false },
-          smtp: {
-            enabled: true,
-            host: 'smtp-server.monitoring.svc:25',
-            user: '',
-            password: '',
-            from_address: vars.grafana.from_address,
-            from_name: 'Grafana Alert',
-            skip_verify: true,
-          },
-        },
-      },
-    },
   },
   //---------------------------------------
   // End of _config
   //---------------------------------------
 
   prometheus+:: {
-    # Add option (from vars.yaml) to enable persistence
+    // Add option (from vars.yaml) to enable persistence
     local pvc = k.core.v1.persistentVolumeClaim,
     prometheus+: {
       spec+: {
