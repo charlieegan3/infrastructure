@@ -37,7 +37,7 @@ spec:
           restartPolicy: OnFailure
           containers:
           - name: instagram-archive-refresh
-            image: charlieegan3/photos:de58b647d8d4018782670940fd925c83cc9a5a4c
+            image: "charlieegan3/photos:de58b647d8d4018782670940fd925c83cc9a5a4c"
             resources:
               requests:
                 cpu: 10m
