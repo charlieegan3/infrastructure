@@ -8,6 +8,9 @@ spec:
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
   jobTemplate:
+    metadata:
+      labels:
+        cronjob: status-json-refresh
     spec:
       template:
         metadata:
