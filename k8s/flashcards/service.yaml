@@ -18,7 +18,7 @@ spec:
           {{- end -}}
     spec:
       containers:
-      - image: "charlieegan3/flashcards:a9c672dc39e9de0c10206c588257d8b9"
+      - image: "charlieegan3/flashcards:67c9b96d9a6f57733ca8a28e1676a1dc"
         ports:
         - name: http1
           containerPort: 3000
