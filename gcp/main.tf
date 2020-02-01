@@ -47,3 +47,7 @@ output "charlieegan3-music-bigquery-uploader-sa-key" {
 output "charlieegan3-cluster-monitoring-sa-key" {
   value = "${module.charlieegan3-cluster.monitoring_sa_key}"
 }
+
+output "charlieegan3-inlets-sa-key" {
+  value = "${module.charlieegan3-inlets.inlets_sa_key}"
+}

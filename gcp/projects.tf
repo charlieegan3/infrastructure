@@ -27,3 +27,9 @@ module "charlieegan3-instagram-archive" {
   org_id          = var.org_id
   billing_account = var.billing_account
 }
+
+module "charlieegan3-inlets" {
+  source          = "./charlieegan3-inlets"
+  org_id          = var.org_id
+  billing_account = var.billing_account
+}
