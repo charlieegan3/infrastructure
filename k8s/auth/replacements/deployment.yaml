@@ -37,6 +37,17 @@ spec:
     {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
     {{- end }}
+      initContainers:
+      - name: check-vault
+        image: "vault:1.3.2"
+        env:
+        - name: VAULT_ADDR
+          value: http://vs-vault.vault
+        - name: VAULT_SKIP_VERIFY
+          value: "true"
+        command:
+        - vault
+        - status
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
