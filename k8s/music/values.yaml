@@ -1,5 +1,5 @@
 images:
-  tracker: charlieegan3/music-play-tracker:42fa0f15adfced89a3bb7c9bcc6448eb
+  tracker: charlieegan3/music-play-tracker:85821a707a20459626e88592468f6aa5
   site: charlieegan3/music-hugo-rebuilder:74401262db95fa1112b76344858951c8
 
 cronjobs:
