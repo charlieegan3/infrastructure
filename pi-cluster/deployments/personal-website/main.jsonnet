@@ -3,6 +3,7 @@ local p =
   (import 'resources/service.jsonnet') +
   (import 'resources/rbac.jsonnet') +
   (import 'resources/cronjob.jsonnet') +
+  (import 'resources/ingress.jsonnet') +
   {
     name: 'personal-website',
     images: {
