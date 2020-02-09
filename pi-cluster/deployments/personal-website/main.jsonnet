@@ -1,5 +1,4 @@
 local p =
-  (import 'resources/namespace.jsonnet') +
   (import 'resources/deployment.jsonnet') +
   (import 'resources/service.jsonnet') +
   (import 'resources/rbac.jsonnet') +
