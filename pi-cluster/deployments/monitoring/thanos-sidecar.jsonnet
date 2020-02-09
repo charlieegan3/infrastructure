@@ -13,7 +13,7 @@ local servicePort = k.core.v1.service.mixin.spec.portsType;
     thanos+:: {
       objectStorageConfig: {
         key: 'thanos.yaml',
-        name: 'thanos-objectstorage',
+        name: 'thanos-objstore-config',
       },
     },
   },

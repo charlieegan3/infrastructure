@@ -15,10 +15,7 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet')
            // Load image versions last to override default from modules
            + (import 'image_sources_versions.jsonnet');
 
-local toos = import 'thanos-object-store-sync.jsonnet';
-
 // Generate core modules
-{ ['00namespace-' + name]: kp.kubePrometheus[name] for name in std.objectFields(kp.kubePrometheus) }
 { ['0prometheus-operator-' + name]: kp.prometheusOperator[name] for name in std.objectFields(kp.prometheusOperator) }
 // { ['prometheus-adapter-' + name]: kp.prometheusAdapter[name] for name in std.objectFields(kp.prometheusAdapter) }
 { ['prometheus-' + name]: kp.prometheus[name] for name in std.objectFields(kp.prometheus) }
@@ -28,5 +25,3 @@ local toos = import 'thanos-object-store-sync.jsonnet';
 // TODO enable ingress
 // { ['ingress-' + name]: kp.ingress[name] for name in std.objectFields(kp.ingress) }
 { ['armExporter-' + name]: kp.armExporter[name] for name in std.objectFields(kp.armExporter) }
-
-{ ['thanos-object-store-sync-' + name]: toos[name] for name in std.objectFields(toos) }

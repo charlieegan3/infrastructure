@@ -16,9 +16,9 @@ if [ "$kubernetes_enabled" != "null" ]; then
 else
   echo "enabling kubernetes auth"
 
-  VAULT_SA_NAME=$(kubectl get sa vs-vault -o jsonpath="{.secrets[*]['name']}")
-  SA_JWT_TOKEN=$(kubectl get secret $VAULT_SA_NAME -o jsonpath="{.data.token}" | base64 --decode; echo)
-  SA_CA_CRT=$(kubectl get secret $VAULT_SA_NAME -o jsonpath="{.data['ca\.crt']}" | base64 --decode; echo)
+  VAULT_SA_NAME=$(kubectl get sa -n vault vs-vault -o jsonpath="{.secrets[*]['name']}")
+  SA_JWT_TOKEN=$(kubectl get secret -n vault $VAULT_SA_NAME -o jsonpath="{.data.token}" | base64 --decode; echo)
+  SA_CA_CRT=$(kubectl get secret -n vault $VAULT_SA_NAME -o jsonpath="{.data['ca\.crt']}" | base64 --decode; echo)
 
   vault auth enable kubernetes
 
@@ -101,7 +101,7 @@ vault write auth/kubernetes/role/finance \
 vault policy write finance policies/finance.hcl
 
 vault write auth/kubernetes/role/monitoring \
-  bound_service_account_names=default,thanos-store,alertmanager-config-creator,po-promop-prometheus,thanos-obj-store-creator \
+  bound_service_account_names=default,thanos-store,alertmanager-config-creator,po-promop-prometheus,thanos-config-creator \
   bound_service_account_namespaces=monitoring \
   policies=monitoring \
   ttl=1h
