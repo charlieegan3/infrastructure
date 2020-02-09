@@ -46,6 +46,9 @@ sudo chmod +x /usr/local/bin/k3s-install.sh
 sudo hostnamectl set-hostname $HOSTNAME
 sudo su -c 'echo "127.0.1.1       $HOSTNAME" >> /etc/hosts'
 
+# enable cgroups
+echo 'cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory' | sudo tee -a /boot/cmdline.txt
+
 # reboot
 sudo shutdown -r now
 ```
