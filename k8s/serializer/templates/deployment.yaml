@@ -7,7 +7,7 @@ metadata:
     app: {{ include "serializer.name" $ }}
   namespace: {{ include "serializer.name" $ }}
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: serializer
@@ -29,6 +29,18 @@ spec:
           {{- end -}}
           `}}
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - serializer
+              topologyKey: kubernetes.io/hostname
       initContainers:
       # create a shared dir for the graph rebuilder to use
       - name: volume-init

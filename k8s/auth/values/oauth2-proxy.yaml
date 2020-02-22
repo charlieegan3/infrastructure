@@ -1,3 +1,5 @@
+replicaCount: 2
+
 image:
   repository: "quay.io/pusher/oauth2_proxy"
   tag: "v3.2.0"
