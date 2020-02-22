@@ -31,7 +31,7 @@ resource "google_dns_record_set" "home" {
 
   managed_zone = google_dns_managed_zone.charlieegan3com.name
 
-  rrdatas = ["2.28.116.144"]
+  rrdatas = ["2.24.160.111"]
 }
 
 resource "google_dns_record_set" "mx" {

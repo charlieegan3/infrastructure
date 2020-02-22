@@ -19,7 +19,7 @@ local container = deployment.mixin.spec.template.spec.containersType;
           { containerPort: 80 },
         ]);
 
-      deployment.new($.name, 1, c, {}) +
+      deployment.new($.name, 2, c, {}) +
       deployment.mixin.metadata.withNamespace($.name) +
       deployment.mixin.metadata.withLabels({ [$.appLabel]: $.name }) +
       deployment.mixin.spec.selector.withMatchLabels($.resources.deployment.metadata.labels) +
