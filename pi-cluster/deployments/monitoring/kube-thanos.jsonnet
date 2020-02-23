@@ -68,6 +68,13 @@ local s = t.store + t.store.withVolumeClaimTemplate + t.store.withServiceMonitor
         spec+: {
           containers: [
             super.containers[0] {
+              args: [
+                'store',
+                '--data-dir=/var/thanos/store',
+                '--grpc-address=0.0.0.0:10901',
+                '--http-address=0.0.0.0:10902',
+                '--objstore.config=$(OBJSTORE_CONFIG)',
+              ],
               resources+: {
                 requests: { cpu: '100m', memory: '100Mi' },
                 limits: { cpu: '1', memory: '1Gi' },
