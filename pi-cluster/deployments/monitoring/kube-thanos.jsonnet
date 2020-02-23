@@ -1,3 +1,4 @@
+local ingress = import 'ingress.jsonnet';
 local t = (import 'kube-thanos/thanos.libsonnet');
 
 local commonConfig = {
@@ -118,7 +119,20 @@ local q = t.query + t.query.withServiceMonitor + commonConfig + {
   },
 };
 
+local thanos_query_ingress = ingress {
+  config+:: {
+    name: 'thanos-query',
+    namespace: commonConfig.config.namespace,
+    hostname: 'thanos.home.charlieegan3.com',
+    service: {
+      name: q.service.metadata.name,
+      port: q.service.spec.ports[1].name,
+    },
+  },
+};
+
 // TODO disabled while testing block upload
-// { ['thanos-compact-' + name]: c[name] for name in std.objectFields(c) } +
-{ ['thanos-store-' + name]: s[name] for name in std.objectFields(s) } +
+// { ['thanos-compact-' + name]: c[name] for name in std.objectFields(c) }
+{ ['thanos-store-' + name]: s[name] for name in std.objectFields(s) }
 { ['thanos-query-' + name]: q[name] for name in std.objectFields(q) }
+{ ['thanos-query-ingress-' + name]: thanos_query_ingress[name] for name in std.objectFields(thanos_query_ingress) }

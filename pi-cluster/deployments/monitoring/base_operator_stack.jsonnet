@@ -34,9 +34,6 @@ local vars = import 'vars.jsonnet';
       memoryPerNode: '30Mi',
     },
   },
-  //---------------------------------------
-  // End of _config
-  //---------------------------------------
 
   prometheus+:: {
     // Add option (from vars.yaml) to enable persistence
@@ -93,41 +90,4 @@ local vars = import 'vars.jsonnet';
   } else {},
 
   grafanaDashboards+:: $._config.grafanaDashboards,
-
-  // Create ingress objects per application
-  ingress+:: {
-    alertmanager:
-      utils.newIngress('alertmanager-main', $._config.namespace, $._config.urls.alert_ingress, '/', 'alertmanager-main', 'web'),
-
-    grafana:
-      utils.newIngress('grafana', $._config.namespace, $._config.urls.grafana_ingress, '/', 'grafana', 'http'),
-
-    prometheus:
-      utils.newIngress('prometheus-k8s', $._config.namespace, $._config.urls.prom_ingress, '/', 'prometheus-k8s', 'web'),
-
-    // // Example external ingress with authentication
-    // 'grafana-external':
-    //     ingress.new() +
-    //     ingress.mixin.metadata.withName('grafana-external') +
-    //     ingress.mixin.metadata.withNamespace($._config.namespace) +
-    //     ingress.mixin.metadata.withLabels({'traffic-type': 'external'}) +
-    //     ingress.mixin.metadata.withAnnotations({
-    //       'ingress.kubernetes.io/auth-type': 'basic',
-    //       'ingress.kubernetes.io/auth-secret': 'basic-auth',
-    //     }) +
-    //     ingress.mixin.spec.withRules(
-    //         ingressRule.new() +
-    //         ingressRule.withHost($._config.urls.grafana_ingress_external) +
-    //         ingressRule.mixin.http.withPaths(
-    //             httpIngressPath.new() +
-    //             httpIngressPath.withPath('/') +
-    //             httpIngressPath.mixin.backend.withServiceName('grafana') +
-    //             httpIngressPath.mixin.backend.withServicePort('http')
-    //         ),
-    //     ),
-    // 'basic-auth-secret':
-    //     // First generate the auth secret with gen_auth.sh script
-    //     secret.new('basic-auth', { auth: std.base64(importstr 'auth') }) +
-    //     secret.mixin.metadata.withNamespace($._config.namespace),
-  },
 }

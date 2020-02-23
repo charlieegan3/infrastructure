@@ -9,6 +9,9 @@ manifests:
 	rm -rf manifests
 	./scripts/build.sh main.jsonnet $(JSONNET_BIN)
 
+concat: manifests
+	cat manifests/*
+
 update:
 	jb update
 

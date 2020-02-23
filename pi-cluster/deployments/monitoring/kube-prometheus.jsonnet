@@ -1,3 +1,5 @@
+local ingress = import 'ingress.jsonnet';
+
 local kp = (import 'kube-prometheus/kube-prometheus.libsonnet')
            + (import 'kube-prometheus/kube-prometheus-anti-affinity.libsonnet')
            + (import 'kube-prometheus/kube-prometheus-kops-coredns.libsonnet')
@@ -15,6 +17,30 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet')
            + (import 'base_operator_stack.jsonnet')
            // Load image versions last to override default from modules
            + (import 'image_sources_versions.jsonnet');
+
+local prometheus_ingress = ingress {
+  config+:: {
+    name: 'prometheus',
+    namespace: kp._config.namespace,
+    hostname: 'prometheus.home.charlieegan3.com',
+    service: {
+      name: kp.prometheus.service.metadata.name,
+      port: kp.prometheus.service.spec.ports[0].name,
+    },
+  },
+};
+
+local alertmanager_ingress = ingress {
+  config+:: {
+    name: 'alertmanager',
+    namespace: kp._config.namespace,
+    hostname: 'alertmanager.home.charlieegan3.com',
+    service: {
+      name: kp.alertmanager.service.metadata.name,
+      port: kp.alertmanager.service.spec.ports[0].name,
+    },
+  },
+};
 
 local excludedKeys = [
   'serviceMonitorKubeControllerManager',
@@ -35,3 +61,5 @@ local excludedKeys = [
 // TODO enable ingress
 // { ['ingress-' + name]: kp.ingress[name] for name in std.objectFields(kp.ingress) }
 { ['armExporter-' + name]: kp.armExporter[name] for name in std.objectFields(kp.armExporter) }
+{ ['prometheus-ingress-' + name]: prometheus_ingress[name] for name in std.objectFields(prometheus_ingress) }
+{ ['alertmanager-ingress-' + name]: alertmanager_ingress[name] for name in std.objectFields(alertmanager_ingress) }

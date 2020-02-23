@@ -1,25 +1,6 @@
 local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
 
 {
-  // Generates the manifests for all objects in kp except those starting with "_"
-  generate(kp):: (
-    {
-      [std.asciiLower(module) + '-' + name]: kp[module][name]
-      for module in std.objectFieldsAll(kp)
-      if !std.startsWith(module, '_')
-      for name in std.objectFields(kp[module])
-    }
-  ),
-
-  // Join multiple objects into one
-  join_objects(objs)::
-    local aux(arr, i, running) =
-      if i >= std.length(arr) then
-        running
-      else
-        aux(arr, i + 1, running + arr[i]) tailstrict;
-    aux(objs, 0, {}),
-
   // Creates serviceaccount
   newServiceAccount(name, namespace, labels):: (
     local serviceAccount = k.core.v1.serviceAccount;
@@ -196,46 +177,5 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
     };
     std.mergePatch(s, t)
     // s + t
-  ),
-
-
-  // Adds arguments to a container in a deployment
-  // args is an array of arguments in the format
-  // ["arg1","arg2",]
-  addArguments(deployment, container, args):: (
-    { spec+: {
-      template+: {
-        spec+: {
-          containers:
-            std.map(
-              function(c)
-                if c.name == container then
-                  c { args+: args }
-                else c,
-              super.containers
-            ),
-        },
-      },
-    } }
-  ),
-
-  // Adds environment variables to a container in a deployment
-  // envs is an array of environment variables in the format
-  // [{name: 'VARNAME', value: 'var_value'},{...},]
-  addEnviromnentVars(deployment, container, envs):: (
-    { spec+: {
-      template+: {
-        spec+: {
-          containers:
-            std.map(
-              function(c)
-                if c.name == container then
-                  c { env+: envs }
-                else c,
-              super.containers
-            ),
-        },
-      },
-    } }
   ),
 }
