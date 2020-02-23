@@ -16,7 +16,37 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet')
            // Base stack is loaded at the end to override previous definitions
            + (import 'base_operator_stack.jsonnet')
            // Load image versions last to override default from modules
-           + (import 'image_sources_versions.jsonnet');
+           + (import 'image_sources_versions.jsonnet') +
+           {
+             prometheusAlerts+:: {
+               groups: std.map(
+                 function(group)
+                   // todo, work out why the original expr sets the path?
+                   if group.name == 'kubernetes-system-kubelet' then
+                     group {
+                       rules: std.map(
+                         function(rule)
+                           if rule.alert == 'KubeletDown' then
+                             rule {
+                               expr: 'absent(up{job="kubelet"} == 1)',
+                             }
+                           else
+                             rule,
+                         group.rules
+                       ),
+                     }
+                   // not running in k3s
+                   else if group.name == 'kubernetes-system-controller-manager' then
+                     group { rules: [] }
+                   // not running in k3s
+                   else if group.name == 'kubernetes-system-scheduler' then
+                     group { rules: [] }
+                   else
+                     group,
+                 super.groups
+               ),
+             },
+           };
 
 local prometheus_ingress = ingress {
   config+:: {
