@@ -1,23 +1,24 @@
 {
-  "dependencies": [
-    {
-      "name": "kube-prometheus",
-      "source": {
-        "git": {
-          "remote": "https://github.com/coreos/kube-prometheus",
-          "subdir": "jsonnet/kube-prometheus"
+    "dependencies": [
+        {
+            "name": "kube-prometheus",
+            "source": {
+                "git": {
+                    "remote": "https://github.com/coreos/kube-prometheus",
+                    "subdir": "jsonnet/kube-prometheus"
+                }
+            },
+            "version": "953c5464f72594b7fde2e534b207b211f7454ec7"
+        },
+        {
+            "name": "kube-thanos",
+            "source": {
+                "git": {
+                    "remote": "https://github.com/thanos-io/kube-thanos",
+                    "subdir": "jsonnet/kube-thanos"
+                }
+            },
+            "version": "c1c7294db937a59b7c3f071ed03048f8a397a16d"
         }
-      },
-      "version": "9493a1a5f7090dca406a0e80d1986484c70c1acf"
-    },
-    {
-      "name": "kube-thanos",
-      "source": {
-        "git": {
-          "remote": "https://github.com/thanos-io/kube-thanos"
-        }
-      },
-      "version": "1b96ed2b7ddaef663671ded83e1c068b16237d2b"
-    }
-  ]
+    ]
 }

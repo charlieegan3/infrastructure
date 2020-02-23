@@ -8,7 +8,7 @@
                     "subdir": "jsonnet/kube-prometheus"
                 }
             },
-            "version": "9493a1a5f7090dca406a0e80d1986484c70c1acf"
+            "version": "953c5464f72594b7fde2e534b207b211f7454ec7"
         },
         {
             "name": "ksonnet",
@@ -28,7 +28,7 @@
                     "subdir": ""
                 }
             },
-            "version": "25f35247681d00d248e7373bd74eca6b0ef7fe90"
+            "version": "8e370046348970ac68bd0fcfd5a15184a6cbdf51"
         },
         {
             "name": "grafana-builder",
@@ -38,7 +38,7 @@
                     "subdir": "grafana-builder"
                 }
             },
-            "version": "f8a06bd7de550bd73921526a040f0db465133059"
+            "version": "7ac7da1a0fe165b68cdb718b2521b560d51bd1f4"
         },
         {
             "name": "grafonnet",
@@ -48,7 +48,7 @@
                     "subdir": "grafonnet"
                 }
             },
-            "version": "f3ee1d810858cf556d25f045b53cb0f1fd10b94e"
+            "version": "c459106d2d2b583dd3a83f6c75eb52abee3af764"
         },
         {
             "name": "slo-libsonnet",
@@ -68,7 +68,7 @@
                     "subdir": "grafana"
                 }
             },
-            "version": "539a90dbf63c812ad0194d8078dd776868a11c81"
+            "version": "1b07a802b663f77e36fe1e518cef552ef9fbdb82"
         },
         {
             "name": "prometheus-operator",
@@ -78,7 +78,7 @@
                     "subdir": "jsonnet/prometheus-operator"
                 }
             },
-            "version": "4f896655d1ad310747d2f1aa69f39067defbb05b"
+            "version": "89f35ef22db0dc24c523bf8be473bcbcf9ac81f6"
         },
         {
             "name": "etcd-mixin",
@@ -88,7 +88,7 @@
                     "subdir": "Documentation/etcd-mixin"
                 }
             },
-            "version": "5adad5e22417bdb1eb7ee86baa3e4a77dddf9cb8"
+            "version": "085b19b5ea47a324c5f04b1077e9a496aaf0720c"
         },
         {
             "name": "prometheus",
@@ -98,7 +98,7 @@
                     "subdir": "documentation/prometheus-mixin"
                 }
             },
-            "version": "199f062c311a05d62765077fca67558f00ee41c1"
+            "version": "f7a322fa6d4736e9bb96a9c4a230c11bafc0a7dd"
         },
         {
             "name": "node-mixin",
@@ -108,7 +108,7 @@
                     "subdir": "docs/node-mixin"
                 }
             },
-            "version": "cafb12dc59f5b853bdd1167547056428eaddd353"
+            "version": "ef7c05816adcb0e8923defe34e97f6afcce0a939"
         },
         {
             "name": "promgrafonnet",
@@ -118,7 +118,37 @@
                     "subdir": "lib/promgrafonnet"
                 }
             },
-            "version": "25f35247681d00d248e7373bd74eca6b0ef7fe90"
+            "version": "8e370046348970ac68bd0fcfd5a15184a6cbdf51"
+        },
+        {
+            "name": "kube-state-metrics",
+            "source": {
+                "git": {
+                    "remote": "https://github.com/kubernetes/kube-state-metrics",
+                    "subdir": "jsonnet/kube-state-metrics"
+                }
+            },
+            "version": "00326acbe5814efe00489f4a7943644a4d4a7900"
+        },
+        {
+            "name": "kube-state-metrics-mixin",
+            "source": {
+                "git": {
+                    "remote": "https://github.com/kubernetes/kube-state-metrics",
+                    "subdir": "jsonnet/kube-state-metrics-mixin"
+                }
+            },
+            "version": "00326acbe5814efe00489f4a7943644a4d4a7900"
+        },
+        {
+            "name": "kube-thanos",
+            "source": {
+                "git": {
+                    "remote": "https://github.com/thanos-io/kube-thanos",
+                    "subdir": "jsonnet/kube-thanos"
+                }
+            },
+            "version": "c1c7294db937a59b7c3f071ed03048f8a397a16d"
         }
     ]
 }
