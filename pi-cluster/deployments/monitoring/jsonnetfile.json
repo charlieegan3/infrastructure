@@ -1,24 +1,34 @@
 {
-    "dependencies": [
-        {
-            "name": "kube-prometheus",
-            "source": {
-                "git": {
-                    "remote": "https://github.com/coreos/kube-prometheus",
-                    "subdir": "jsonnet/kube-prometheus"
-                }
-            },
-            "version": "953c5464f72594b7fde2e534b207b211f7454ec7"
-        },
-        {
-            "name": "kube-thanos",
-            "source": {
-                "git": {
-                    "remote": "https://github.com/thanos-io/kube-thanos",
-                    "subdir": "jsonnet/kube-thanos"
-                }
-            },
-            "version": "c1c7294db937a59b7c3f071ed03048f8a397a16d"
+  "dependencies": [
+    {
+      "name": "kube-prometheus",
+      "source": {
+        "git": {
+          "remote": "https://github.com/coreos/kube-prometheus",
+          "subdir": "jsonnet/kube-prometheus"
         }
-    ]
+      },
+      "version": "953c5464f72594b7fde2e534b207b211f7454ec7"
+    },
+    {
+      "name": "kube-state-metrics",
+      "source": {
+        "git": {
+          "remote": "https://github.com/kubernetes/kube-state-metrics",
+          "subdir": "jsonnet/kube-state-metrics"
+        }
+      },
+      "version": "00326acbe5814efe00489f4a7943644a4d4a7900"
+    },
+    {
+      "name": "kube-thanos",
+      "source": {
+        "git": {
+          "remote": "https://github.com/thanos-io/kube-thanos",
+          "subdir": "jsonnet/kube-thanos"
+        }
+      },
+      "version": "c1c7294db937a59b7c3f071ed03048f8a397a16d"
+    }
+  ]
 }

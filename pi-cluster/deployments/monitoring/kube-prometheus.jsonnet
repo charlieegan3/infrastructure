@@ -86,10 +86,7 @@ local excludedKeys = [
   if !std.member(excludedKeys, name)
 }
 { ['alertmanager-' + name]: kp.alertmanager[name] for name in std.objectFields(kp.alertmanager) if name != 'secret' }
-// { ['kube-state-metrics-' + name]: kp.kubeStateMetrics[name] for name in std.objectFields(kp.kubeStateMetrics) }
 { ['node-exporter-' + name]: kp.nodeExporter[name] for name in std.objectFields(kp.nodeExporter) }
-// TODO enable ingress
-// { ['ingress-' + name]: kp.ingress[name] for name in std.objectFields(kp.ingress) }
 { ['armExporter-' + name]: kp.armExporter[name] for name in std.objectFields(kp.armExporter) }
 { ['prometheus-ingress-' + name]: prometheus_ingress[name] for name in std.objectFields(prometheus_ingress) }
 { ['alertmanager-ingress-' + name]: alertmanager_ingress[name] for name in std.objectFields(alertmanager_ingress) }

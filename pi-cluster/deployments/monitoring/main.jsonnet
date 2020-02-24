@@ -1,3 +1,4 @@
+local ksm = import 'ksm.jsonnet';
 local kp = import 'kube-prometheus.jsonnet';
 local kt = import 'kube-thanos.jsonnet';
 
@@ -35,4 +36,4 @@ local thanos_config_creator = sc {
 
 { ['thanos-config-creator-' + name]: thanos_config_creator[name] for name in std.objectFields(thanos_config_creator) } +
 { ['alertmanager-config-creator-' + name]: alertmanager_config_creator[name] for name in std.objectFields(alertmanager_config_creator) } +
-kp + kt
+kp + kt + ksm
