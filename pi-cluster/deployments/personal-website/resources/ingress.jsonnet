@@ -18,13 +18,13 @@
       spec: {
         tls: [
           {
-            hosts: ['personal-website.home.charlieegan3.com'],
+            hosts: ['charlieegan3.co.uk'],
             secretName: $.name + '-tls',
           },
         ],
         rules: [
           {
-            host: 'personal-website.home.charlieegan3.com',
+            host: 'charlieegan3.co.uk',
             http: {
               paths: [
                 {

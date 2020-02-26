@@ -21,8 +21,8 @@
       annotations: {
         'cert-manager.io/cluster-issuer': 'letsencrypt-prod',
         'kubernetes.io/ingress.class': 'nginx',
-        'nginx.ingress.kubernetes.io/auth-url': 'https://auth.charlieegan3.com/oauth2/auth',
-        'nginx.ingress.kubernetes.io/auth-signin': 'https://auth.charlieegan3.com/oauth2/start?rd=https://' + ingress.config.hostname,
+        'nginx.ingress.kubernetes.io/auth-url': 'https://auth.charlieegan3.co.uk/oauth2/auth',
+        'nginx.ingress.kubernetes.io/auth-signin': 'https://auth.charlieegan3.co.uk/oauth2/start?rd=https://' + ingress.config.hostname,
       },
     },
     spec: {
