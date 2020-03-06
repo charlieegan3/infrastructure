@@ -131,8 +131,7 @@ local thanos_query_ingress = ingress {
   },
 };
 
-// TODO disabled while testing block upload
-// { ['thanos-compact-' + name]: c[name] for name in std.objectFields(c) }
+{ ['thanos-compact-' + name]: c[name] for name in std.objectFields(c) }
 { ['thanos-store-' + name]: s[name] for name in std.objectFields(s) }
 { ['thanos-query-' + name]: q[name] for name in std.objectFields(q) }
 { ['thanos-query-ingress-' + name]: thanos_query_ingress[name] for name in std.objectFields(thanos_query_ingress) }
