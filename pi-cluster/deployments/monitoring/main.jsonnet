@@ -34,6 +34,21 @@ local thanos_config_creator = sc {
   },
 };
 
+local grafana_config_creator = sc {
+  config+:: {
+    name: 'grafana-config-creator',
+    namespace: namespace,
+    vault: {
+      role: 'monitoring',
+      path: 'secret/monitoring/grafana-datasources',
+      key: 'text',
+      output: 'datasources.yaml',
+    },
+    secret_name: 'grafana-datasources',
+  },
+};
+
 { ['thanos-config-creator-' + name]: thanos_config_creator[name] for name in std.objectFields(thanos_config_creator) } +
 { ['alertmanager-config-creator-' + name]: alertmanager_config_creator[name] for name in std.objectFields(alertmanager_config_creator) } +
+{ ['grafana-config-creator-' + name]: grafana_config_creator[name] for name in std.objectFields(grafana_config_creator) } +
 kp + kt + ksm

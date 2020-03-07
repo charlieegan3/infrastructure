@@ -20,16 +20,7 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet')
            {
              _config+:: {
                grafana+:: {
-                 datasources: [{
-                   name: 'prometheus',
-                   type: 'prometheus',
-                   access: 'proxy',
-                   orgId: 1,
-                   url: 'http://' + $._config.prometheus.serviceName + '.' + $._config.namespace + '.svc:9090',
-                   version: 1,
-                   editable: false,
-                   default: true,
-                 }],
+                 datasources: [],  // populated from secret
                  config: {
                    sections: {
                      'auth.anonymous': {
@@ -42,6 +33,7 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet')
              },
              grafanaDashboards: {
                'k8s.json': (import 'dashboards/k8s.json'),
+               'finance.json': (import 'dashboards/finance.json'),
              },
              prometheusAlerts+:: {
                groups: std.map(
@@ -110,8 +102,11 @@ local grafana_ingress = ingress {
 };
 
 local excludedKeys = [
+  // prom
   'serviceMonitorKubeControllerManager',
   'serviceMonitorKubeScheduler',
+  // grafana
+  'dashboardDatasources',
 ];
 
 // Generate core modules
@@ -127,5 +122,9 @@ local excludedKeys = [
 { ['armExporter-' + name]: kp.armExporter[name] for name in std.objectFields(kp.armExporter) }
 { ['prometheus-ingress-' + name]: prometheus_ingress[name] for name in std.objectFields(prometheus_ingress) }
 { ['alertmanager-ingress-' + name]: alertmanager_ingress[name] for name in std.objectFields(alertmanager_ingress) }
-{ ['grafana-' + name]: kp.grafana[name] for name in std.objectFields(kp.grafana) }
+{
+  ['grafana-' + name]: kp.grafana[name]
+  for name in std.objectFields(kp.grafana)
+  if !std.member(excludedKeys, name)
+}
 { ['grafana-ingress-' + name]: grafana_ingress[name] for name in std.objectFields(grafana_ingress) }
