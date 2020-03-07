@@ -18,6 +18,31 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet')
            // Load image versions last to override default from modules
            + (import 'image_sources_versions.jsonnet') +
            {
+             _config+:: {
+               grafana+:: {
+                 datasources: [{
+                   name: 'prometheus',
+                   type: 'prometheus',
+                   access: 'proxy',
+                   orgId: 1,
+                   url: 'http://' + $._config.prometheus.serviceName + '.' + $._config.namespace + '.svc:9090',
+                   version: 1,
+                   editable: false,
+                   default: true,
+                 }],
+                 config: {
+                   sections: {
+                     'auth.anonymous': {
+                       enabled: true,
+                       org_role: 'Admin',
+                     },
+                   },
+                 },
+               },
+             },
+             grafanaDashboards: {
+               'k8s.json': (import 'dashboards/k8s.json'),
+             },
              prometheusAlerts+:: {
                groups: std.map(
                  function(group)
@@ -72,6 +97,18 @@ local alertmanager_ingress = ingress {
   },
 };
 
+local grafana_ingress = ingress {
+  config+:: {
+    name: 'grafana',
+    namespace: kp._config.namespace,
+    hostname: 'grafana.charlieegan3.co.uk',
+    service: {
+      name: kp.grafana.service.metadata.name,
+      port: kp.grafana.service.spec.ports[0].name,
+    },
+  },
+};
+
 local excludedKeys = [
   'serviceMonitorKubeControllerManager',
   'serviceMonitorKubeScheduler',
@@ -90,3 +127,5 @@ local excludedKeys = [
 { ['armExporter-' + name]: kp.armExporter[name] for name in std.objectFields(kp.armExporter) }
 { ['prometheus-ingress-' + name]: prometheus_ingress[name] for name in std.objectFields(prometheus_ingress) }
 { ['alertmanager-ingress-' + name]: alertmanager_ingress[name] for name in std.objectFields(alertmanager_ingress) }
+{ ['grafana-' + name]: kp.grafana[name] for name in std.objectFields(kp.grafana) }
+{ ['grafana-ingress-' + name]: grafana_ingress[name] for name in std.objectFields(grafana_ingress) }
