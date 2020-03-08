@@ -1,0 +1,24 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: server
+  namespace: xmas-trees
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: "$1"
+spec:
+  tls:
+  - hosts:
+    - xmas-trees.charlieegan3.co.uk
+    secretName: xmas-trees-tls
+  rules:
+  - host: xmas-trees.charlieegan3.co.uk
+    http:
+      paths:
+      - path: /api(/v0/data/tree/main/validate)
+        backend:
+          serviceName: server
+          servicePort: 80
