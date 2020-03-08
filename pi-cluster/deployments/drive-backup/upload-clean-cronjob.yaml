@@ -1,0 +1,44 @@
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: upload-clean
+  namespace: drive-backup
+spec:
+  concurrencyPolicy: Forbid
+  schedule: "0 2 * * 1" # At 02:00 on Monday
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    metadata:
+      labels:
+        cronjob: upload-clean
+    spec:
+      template:
+        metadata:
+          annotations:
+            vault.hashicorp.com/agent-inject: "true"
+            vault.hashicorp.com/role: "drive-backup"
+            vault.hashicorp.com/agent-pre-populate-only: "true"
+            vault.hashicorp.com/agent-inject-secret-rclone.conf: "secret/drive-backup/main"
+            vault.hashicorp.com/agent-inject-template-rclone.conf: |
+              {{- with secret "secret/drive-backup/main" -}}
+              {{- .Data.text -}}
+              {{- end -}}
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: backup
+            image: charlieegan3/rclone:arm-5ad068cba7f854414c5fd83436dd1913
+            args:
+            - cleanup
+            - bb:charlieegan3-drive-backup/Upload/
+            - "-P"
+            - "--config=/vault/secrets/rclone.conf"
+            resources:
+              requests:
+                memory: "100Mi"
+                cpu: "100m"
+              limits:
+                memory: "1Gi"
+                cpu: "500m"
