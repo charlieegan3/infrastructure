@@ -20,6 +20,7 @@ spec:
         vault.hashicorp.com/role: "serializer"
         vault.hashicorp.com/agent-pre-populate-only: "true"
         vault.hashicorp.com/agent-inject-secret-env: "secret/serializer/main"
+        vault.hashicorp.com/agent-init-first: "true"
         vault.hashicorp.com/agent-inject-template-env: |
           {{`
           {{- with secret "secret/serializer/main" -}}
@@ -52,6 +53,13 @@ spec:
         volumeMounts:
         - mountPath: /shared
           name: shared-app-dir
+      - name: vault-check
+        image: {{ .Values.images.rails }}
+        command:
+        - bash
+        - -c
+        - |
+          ruby -e "exit 1 unless File.exists?('/vault/secrets/env')"
       containers:
       - name: graph-rebuilder
         image: {{ .Values.images.rails }}
