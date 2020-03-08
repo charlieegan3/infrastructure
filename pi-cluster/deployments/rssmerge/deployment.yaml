@@ -1,0 +1,21 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rssmerge
+  namespace: rssmerge
+spec:
+  selector:
+    matchLabels:
+      app: rssmerge
+  template:
+    metadata:
+      labels:
+        app: rssmerge
+    spec:
+      containers:
+      - name: rssmerge
+        image: charlieegan3/rssmerge:arm-f681327072de442972a027df85ac60fe
+        ports:
+        - name: http1
+          containerPort: 3000
