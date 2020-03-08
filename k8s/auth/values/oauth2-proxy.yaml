@@ -1,4 +1,4 @@
-replicaCount: 2
+replicaCount: 1
 
 image:
   repository: "quay.io/pusher/oauth2_proxy"
@@ -17,6 +17,7 @@ podAnnotations:
   vault.hashicorp.com/agent-inject: "true"
   vault.hashicorp.com/role: "auth"
   vault.hashicorp.com/agent-pre-populate-only: "true"
+  vault.hashicorp.com/agent-init-first: "true"
   vault.hashicorp.com/agent-inject-secret-oauth2_proxy.cfg: "secret/auth/main"
   vault.hashicorp.com/agent-inject-template-oauth2_proxy.cfg: |
     {{- with secret "secret/auth/main" -}}

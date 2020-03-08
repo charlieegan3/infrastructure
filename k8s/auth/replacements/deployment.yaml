@@ -48,6 +48,11 @@ spec:
         command:
         - vault
         - status
+      - name: check-vault-secrets
+        image: busybox
+        command:
+        - cat
+        - /vault/secrets/oauth2_proxy.cfg
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
