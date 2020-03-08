@@ -1,0 +1,26 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mycriticmatch
+  namespace: mycriticmatch
+spec:
+  selector:
+    matchLabels:
+      app: mycriticmatch
+  template:
+    metadata:
+      labels:
+        app: mycriticmatch
+    spec:
+      containers:
+      - name: mycriticmatch
+        image: charlieegan3/mycriticmatch:arm-1e1b36e7c8debc3071ffc9a7aca4b028
+        ports:
+        - name: http1
+          containerPort: 80
+        command:
+        - sh
+        - -c
+        - |
+          mkdir -p /var/log/nginx && exec nginx -g "daemon off;"

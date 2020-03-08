@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mycriticmatch
+  labels:
+    app: mycriticmatch
+  namespace: mycriticmatch
+spec:
+  type: ClusterIP
+  selector:
+    app: mycriticmatch
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: http1
