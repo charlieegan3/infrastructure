@@ -13,7 +13,7 @@ RUN curl -LO https://storage.googleapis.com/kubernetes-helm/helm-v${VERSION}-lin
     helm init --client-only
 
 # fetch vault chart
-ENV version 0.3.0
+ENV version 0.4.0
 RUN curl -LO https://github.com/hashicorp/vault-helm/archive/v$version.zip
 RUN unzip v$version.zip && mv vault-helm-$version/ chart
 
