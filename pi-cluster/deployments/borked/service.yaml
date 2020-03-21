@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: borked
+  namespace: borked
+spec:
+  type: ClusterIP
+  selector:
+    app: borked
+  ports:
+  - name: http1
+    protocol: TCP
+    port: 80
+    targetPort: http1

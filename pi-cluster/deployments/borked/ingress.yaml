@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: borked
+  namespace: borked
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    kubernetes.io/ingress.class: nginx
+spec:
+  tls:
+  - hosts:
+    - borked.charlieegan3.co.uk
+    secretName: borked-tls
+  rules:
+  - host: borked.charlieegan3.co.uk
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: borked
+          servicePort: http1

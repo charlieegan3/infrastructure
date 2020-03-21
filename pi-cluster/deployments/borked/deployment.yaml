@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: borked
+  namespace: borked
+spec:
+  selector:
+    matchLabels:
+      app: borked
+  template:
+    metadata:
+      labels:
+        app: borked
+    spec:
+      containers:
+      - name: borked
+        image: "docker.io/charlieegan3/borked:arm-60f97b2c0bf7259441c3603e99b29bec"
+        ports:
+        - name: http1
+          containerPort: 3000
+        resources:
+          limits:
+            cpu: "50m"
+          requests:
+            cpu: "50m"
