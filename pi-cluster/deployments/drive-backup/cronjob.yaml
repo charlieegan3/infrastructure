@@ -32,7 +32,7 @@ spec:
             image: charlieegan3/rclone:arm-5ad068cba7f854414c5fd83436dd1913
             args:
             - sync
-            - drive:/
+            - onedrive:/
             - bb:charlieegan3-drive-backup/
             - "-P"
             - "--config=/vault/secrets/rclone.conf"
