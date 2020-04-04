@@ -1,0 +1,24 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: music-summary-website
+  namespace: {{ include "music.name" . }}
+  labels:
+    app: music-summary-website
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    kubernetes.io/ingress.class: nginx
+spec:
+  tls:
+  - hosts:
+    - music.charlieegan3.co.uk
+    secretName: music-summary-website-tls
+  rules:
+  - host: music.charlieegan3.co.uk
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: music-summary-website
+          servicePort: 80

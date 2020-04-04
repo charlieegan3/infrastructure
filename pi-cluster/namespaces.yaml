@@ -68,3 +68,8 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: borked
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: music

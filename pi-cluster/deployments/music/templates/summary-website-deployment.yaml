@@ -1,0 +1,66 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: music-summary-website
+  namespace: {{ include "music.name" . }}
+spec:
+  selector:
+    matchLabels:
+      app: music-summary-website
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: music-summary-website
+    spec:
+      volumes:
+      - name: shared-data
+        emptyDir: {}
+      containers:
+      - name: nginx-template
+        image: {{ .Values.repos.nginx_template }}:{{ .Values.tag }}
+        ports:
+        - containerPort: 80
+          name: http
+        volumeMounts:
+        - mountPath: /usr/share/nginx/html
+          name: shared-data
+        resources:
+          requests:
+            memory: "100Mi"
+            cpu: "10m"
+          limits:
+            memory: "100Mi"
+            cpu: "100m"
+      - name: hugo-rebuilder
+        image: {{ .Values.repos.website }}:{{ .Values.tag }}
+        env:
+        - name: INTERVAL
+          value: "86400"
+        - name: DESTINATION
+          value: "/output"
+        - name: BACKUP_LOCATION
+          value: "https://storage.googleapis.com/charlieegan3-music-backup/enriched-backup-latest.json"
+        volumeMounts:
+        - mountPath: /output
+          name: shared-data
+        readinessProbe:
+          exec:
+            command:
+            - bash
+            - -c
+            - "test -e /tmp/working && exit 1 || exit 0"
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        resources:
+          limits:
+            cpu: "1"
+            memory: "1500Mi"
+          requests:
+            cpu: "10m"
+            memory: "100Mi"
