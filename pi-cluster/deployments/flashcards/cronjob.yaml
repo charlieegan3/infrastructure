@@ -1,0 +1,38 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: reload-cards
+  namespace: flashcards
+spec:
+  schedule: "*/10 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    metadata:
+      labels:
+        cronjob: reload-cards
+    spec:
+      template:
+        metadata:
+          annotations:
+            vault.hashicorp.com/agent-inject: "true"
+            vault.hashicorp.com/role: "flashcards-api"
+            vault.hashicorp.com/agent-pre-populate-only: "true"
+            vault.hashicorp.com/agent-inject-secret-env: "secret/flashcards-api/main"
+            vault.hashicorp.com/agent-inject-template-env: |
+              {{- with secret "secret/flashcards-api/main" -}}
+              {{- .Data.env -}}
+              {{- end -}}
+        spec:
+          restartPolicy: OnFailure
+          volumes:
+          containers:
+          - name: reload-cards
+            image: "charlieegan3/flashcards:arm-c9b34efbbab40b5a7f03e27a006bf23de25df3e3"
+            env:
+            - name: ENV_PATH
+              value: /vault/secrets/env
+            command:
+            - rake
+            - reload:cards
