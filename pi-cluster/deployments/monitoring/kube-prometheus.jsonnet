@@ -72,6 +72,20 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet')
                          group.rules
                        ),
                      }
+                   // only warn for high latency over a longer period
+                   else if group.name == 'kubernetes-system-apiserver' then
+                     group {
+                       rules: std.map(
+                         function(rule)
+                           if rule.alert == 'KubeAPILatencyHigh' then
+                             rule {
+                               'for': '15m',
+                             }
+                           else
+                             rule,
+                         group.rules
+                       ),
+                     }
                    else
                      group,
                  super.groups
