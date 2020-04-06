@@ -58,6 +58,20 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet')
                    // not running in k3s
                    else if group.name == 'kubernetes-system-scheduler' then
                      group { rules: [] }
+                   // some jobs run less than once an hour
+                   else if group.name == 'kubernetes-apps' then
+                     group {
+                       rules: std.map(
+                         function(rule)
+                           if rule.alert == 'KubeCronJobRunning' then
+                             rule {
+                               expr: 'time() - kube_cronjob_next_schedule_time{job="kube-state-metrics"} > 604800',
+                             }
+                           else
+                             rule,
+                         group.rules
+                       ),
+                     }
                    else
                      group,
                  super.groups
