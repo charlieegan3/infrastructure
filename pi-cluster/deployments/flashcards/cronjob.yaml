@@ -29,7 +29,7 @@ spec:
           volumes:
           containers:
           - name: reload-cards
-            image: "charlieegan3/flashcards:arm-c9b34efbbab40b5a7f03e27a006bf23de25df3e3"
+            image: "charlieegan3/flashcards:arm-10dffe6cfc587f6d88daa684f9d35dad07465dfe"
             env:
             - name: ENV_PATH
               value: /vault/secrets/env
