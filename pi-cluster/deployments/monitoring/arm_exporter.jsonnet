@@ -74,7 +74,8 @@ local utils = import 'utils.libsonnet';
       daemonset.mixin.spec.template.metadata.withLabels(podLabels) +
       daemonset.mixin.spec.template.spec.withNodeSelector({ 'beta.kubernetes.io/arch': 'arm' }) +
       daemonset.mixin.spec.template.spec.withServiceAccountName('arm-exporter') +
-      daemonset.mixin.spec.template.spec.withContainers(c),
+      daemonset.mixin.spec.template.spec.withContainers(c) +
+      daemonset.mixin.spec.template.spec.withTolerations([{ operator: 'Exists' }]),
 
     service:
       local service = k.core.v1.service;
