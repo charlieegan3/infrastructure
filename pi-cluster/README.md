@@ -62,6 +62,9 @@ export INSTALL_K3S_VERSION=v1.17.4+k3s1
 export INSTALL_K3S_EXEC="--no-deploy=traefik,servicelb,local-storage --token=$TOKEN"
 k3s-install.sh
 
+# taint
+kubectl taint nodes master master=true:NoSchedule
+
 # save kube config
 mkdir -p /home/pi/.kube
 sudo cp /etc/rancher/k3s/k3s.yaml /home/pi/.kube/config
