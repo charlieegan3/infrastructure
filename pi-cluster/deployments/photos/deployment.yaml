@@ -1,0 +1,71 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: photos
+  namespace: photos
+spec:
+  selector:
+    matchLabels:
+      app: photos
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: photos
+    spec:
+      initContainers:
+      - name: init-shared-volume
+        image: charlieegan3/photos-rebuilder:arm-11bbe774f3665f486b435f88441cf54aaf2e3c6d
+        command:
+        - cp
+        - -r
+        - /output/frontend/.
+        - /shared
+        volumeMounts:
+        - mountPath: /shared
+          name: shared-data
+      containers:
+      - name: nginx-template
+        image: charlieegan3/photos-nginx-template:arm-11bbe774f3665f486b435f88441cf54aaf2e3c6d
+        ports:
+        - containerPort: 80
+          name: http
+        volumeMounts:
+        - mountPath: /usr/share/nginx/html
+          name: shared-data
+        resources:
+          requests:
+            memory: "10Mi"
+            cpu: "10m"
+          limits:
+            memory: "100Mi"
+            cpu: "200m"
+      - name: rebuilder
+        image: charlieegan3/photos-rebuilder:arm-11bbe774f3665f486b435f88441cf54aaf2e3c6d
+        env:
+        - name: USER
+          value: charlieegan3
+        - name: REPO
+          value: photos
+        - name: INTERVAL
+          value: "7200"
+        - name: DESTINATION
+          value: /output/frontend/data
+        volumeMounts:
+        - mountPath: /output/frontend
+          name: shared-data
+        resources:
+          limits:
+            cpu: "2"
+            memory: "500Mi"
+          requests:
+            cpu: "10m"
+            memory: "20Mi"
+      volumes:
+      - name: shared-data
+        emptyDir: {}
