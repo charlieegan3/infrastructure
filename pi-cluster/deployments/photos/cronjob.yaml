@@ -1,0 +1,57 @@
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: archive-refresh
+  namespace: photos
+spec:
+  # this is to prevent the controller hitting FailedNeedsStart
+  # I think this is related to clock skew from my premptible VMs
+  startingDeadlineSeconds: 30
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  concurrencyPolicy: Forbid
+  schedule: "33 */3 * * *"
+  jobTemplate:
+    metadata:
+      labels:
+        cronjob: archive-refresh
+    spec:
+      template:
+        metadata:
+          annotations:
+            vault.hashicorp.com/agent-inject: "true"
+            vault.hashicorp.com/role: "photos"
+            vault.hashicorp.com/agent-pre-populate-only: "true"
+            vault.hashicorp.com/agent-inject-secret-env: "secret/photos/env"
+            vault.hashicorp.com/agent-inject-template-env: |
+              {{- with secret "secret/photos/env" -}}
+              {{- .Data.text -}}
+              {{- end -}}
+            vault.hashicorp.com/agent-inject-secret-key.json: "secret/photos/google"
+            vault.hashicorp.com/agent-inject-template-key.json: |
+              {{- with secret "secret/photos/google" -}}
+              {{- .Data.key -}}
+              {{- end -}}
+        spec:
+          serviceAccountName: archive
+          restartPolicy: OnFailure
+          containers:
+          - name: instagram-archive-refresh
+            image: "charlieegan3/photos-archive:arm-80727d0ea7cf9b4ea2aac66ea523a1be8ae964b6"
+            resources:
+              requests:
+                cpu: 10m
+                memory: 10Mi
+              limits:
+                cpu: 0.5
+                memory: 500Mi
+            env:
+            - name: ENV_PATH
+              value: /vault/secrets/env
+            command:
+            - sh
+            - -c
+            - |
+              gcloud auth activate-service-account --key-file=/vault/secrets/key.json && \
+              /entrypoint.sh
