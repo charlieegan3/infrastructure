@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: web
-        image: "charlieegan3/flashcards:arm-10dffe6cfc587f6d88daa684f9d35dad07465dfe"
+        image: "charlieegan3/flashcards:arm-6b30b4e295cf28429ef334b25b6313a863b654d8"
         ports:
         - name: http1
           containerPort: 3000
