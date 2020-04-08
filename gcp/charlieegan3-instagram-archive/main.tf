@@ -63,16 +63,6 @@ resource "google_project_iam_binding" "storage_admin" {
   ]
 }
 
-# allow token creation for cluster workload
-resource "google_service_account_iam_binding" "gke_preemptible_killer" {
-  service_account_id = google_service_account.default.name
-  role               = "roles/iam.serviceAccountTokenCreator"
-
-  members = [
-    "serviceAccount:charlieegan3-cluster.svc.id.goog[instagram-archive/instagram-archive-refresh]",
-  ]
-}
-
 resource "google_storage_bucket" "image_backup" {
   name          = "charlieegan3-instagram-archive"
   location      = "EU"
