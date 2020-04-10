@@ -1,14 +1,7 @@
-provider "google" {
-  version = "2.20.0"
-}
-
-provider "google-beta" {
-  version = "2.20.0"
-}
+provider "google" {}
+provider "google-beta" {}
 
 terraform {
-  required_version = "0.12.11"
-
   backend "remote" {
     organization = "charlieegan3"
 
