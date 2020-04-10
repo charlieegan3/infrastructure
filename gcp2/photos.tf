@@ -1,6 +1,6 @@
 resource "google_project" "photos" {
   name       = "charlieegan3-photos"
-  project_id = "charlieegan3-photos"
+  project_id = "charlieegan3-photos-001"
 
   billing_account = var.billing_account
 }
