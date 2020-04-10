@@ -1,7 +1,8 @@
 resource "google_project" "photos" {
-  name            = "charlieegan3-photos"
-  project_id      = "charlieegan3-photos"
-  billing_account = var.billing_account
+  name       = "charlieegan3-photos"
+  project_id = "charlieegan3-photos"
+
+  # billing_account = var.billing_account
 }
 
 resource "google_project_service" "photos_storage_api" {
