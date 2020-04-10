@@ -12,5 +12,5 @@ terraform {
 }
 
 variable "billing_account" {
-  default = "005E2D-B6C22B-0274AA"
+  default = "010433-8679E7-929391"
 }
