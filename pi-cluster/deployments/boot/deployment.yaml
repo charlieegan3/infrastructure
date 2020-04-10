@@ -1,0 +1,28 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: boot
+  namespace: boot
+spec:
+  selector:
+    matchLabels:
+      app: boot
+  template:
+    metadata:
+      labels:
+        app: boot
+    spec:
+      containers:
+      - image: "charlieegan3/boot:arm-eb295266fcfbc93c3d844ee7e5e494d3c0b3af14"
+        name: boot
+        ports:
+        - name: http1
+          containerPort: 80
+        resources:
+          limits:
+            cpu: "20m"
+            memory: "20Mi"
+          requests:
+            cpu: "10m"
+            memory: "10Mi"

@@ -1,0 +1,26 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: boot
+  namespace: boot
+  labels:
+    app: boot
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/auth-url: "https://auth.charlieegan3.co.uk/oauth2/auth"
+    nginx.ingress.kubernetes.io/auth-signin: "https://auth.charlieegan3.co.uk/oauth2/start?rd=https://boot.charlieegan3.co.uk"
+spec:
+  tls:
+  - hosts:
+    - boot.charlieegan3.co.uk
+    secretName: boot-tls
+  rules:
+  - host: boot.charlieegan3.co.uk
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: boot
+          servicePort: 80
