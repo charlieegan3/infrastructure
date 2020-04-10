@@ -6,7 +6,7 @@ terraform {
     organization = "charlieegan3"
 
     workspaces {
-      name = "my-app-prod"
+      name = "infrastructure"
     }
   }
 }
