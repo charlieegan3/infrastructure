@@ -18,15 +18,6 @@
         }
       },
       "version": "00326acbe5814efe00489f4a7943644a4d4a7900"
-    },
-    {
-      "source": {
-        "git": {
-          "remote": "https://github.com/thanos-io/kube-thanos",
-          "subdir": "jsonnet/kube-thanos"
-        }
-      },
-      "version": "c1c7294db937a59b7c3f071ed03048f8a397a16d"
     }
   ],
   "legacyImports": true
