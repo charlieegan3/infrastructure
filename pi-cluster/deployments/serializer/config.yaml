@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: default-conf
+  namespace: serializer
+data:
+  default.conf: |
+    server {
+        listen     80;
+        server_name proxy;
+
+        location / {
+            proxy_pass https://serializer.herokuapp.com;
+        }
+    }
