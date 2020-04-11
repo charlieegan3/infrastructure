@@ -12,10 +12,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - music.charlieegan3.co.uk
+    - music.charlieegan3.com
     secretName: music-summary-website-tls
   rules:
-  - host: music.charlieegan3.co.uk
+  - host: music.charlieegan3.com
     http:
       paths:
       - path: /

@@ -12,10 +12,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - calendars.charlieegan3.co.uk
+    - calendars.charlieegan3.com
     secretName: calendars-tls
   rules:
-  - host: calendars.charlieegan3.co.uk
+  - host: calendars.charlieegan3.com
     http:
       paths:
       - path: /

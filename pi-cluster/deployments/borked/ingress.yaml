@@ -9,10 +9,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - borked.charlieegan3.co.uk
+    - borked.charlieegan3.com
     secretName: borked-tls
   rules:
-  - host: borked.charlieegan3.co.uk
+  - host: borked.charlieegan3.com
     http:
       paths:
       - path: /

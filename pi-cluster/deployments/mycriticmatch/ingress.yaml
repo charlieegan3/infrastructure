@@ -10,10 +10,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - mycriticmatch.charlieegan3.co.uk
+    - mycriticmatch.charlieegan3.com
     secretName: mycriticmatch-tls
   rules:
-  - host: mycriticmatch.charlieegan3.co.uk
+  - host: mycriticmatch.charlieegan3.com
     http:
       paths:
       - path: /

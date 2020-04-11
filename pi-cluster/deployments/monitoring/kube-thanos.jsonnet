@@ -123,7 +123,7 @@ local thanos_query_ingress = ingress {
   config+:: {
     name: 'thanos-query',
     namespace: commonConfig.config.namespace,
-    hostname: 'thanos.charlieegan3.co.uk',
+    hostname: 'thanos.charlieegan3.com',
     service: {
       name: q.service.metadata.name,
       port: q.service.spec.ports[1].name,

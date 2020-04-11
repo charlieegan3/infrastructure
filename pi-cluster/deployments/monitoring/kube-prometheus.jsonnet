@@ -97,7 +97,7 @@ local prometheus_ingress = ingress {
   config+:: {
     name: 'prometheus',
     namespace: kp._config.namespace,
-    hostname: 'prometheus.charlieegan3.co.uk',
+    hostname: 'prometheus.charlieegan3.com',
     service: {
       name: kp.prometheus.service.metadata.name,
       port: kp.prometheus.service.spec.ports[0].name,
@@ -109,7 +109,7 @@ local alertmanager_ingress = ingress {
   config+:: {
     name: 'alertmanager',
     namespace: kp._config.namespace,
-    hostname: 'alertmanager.charlieegan3.co.uk',
+    hostname: 'alertmanager.charlieegan3.com',
     service: {
       name: kp.alertmanager.service.metadata.name,
       port: kp.alertmanager.service.spec.ports[0].name,
@@ -121,7 +121,7 @@ local grafana_ingress = ingress {
   config+:: {
     name: 'grafana',
     namespace: kp._config.namespace,
-    hostname: 'grafana.charlieegan3.co.uk',
+    hostname: 'grafana.charlieegan3.com',
     service: {
       name: kp.grafana.service.metadata.name,
       port: kp.grafana.service.spec.ports[0].name,

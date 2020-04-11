@@ -12,10 +12,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - photos.charlieegan3.co.uk
+    - photos.charlieegan3.com
     secretName: photos-tls
   rules:
-  - host: photos.charlieegan3.co.uk
+  - host: photos.charlieegan3.com
     http:
       paths:
       - path: /

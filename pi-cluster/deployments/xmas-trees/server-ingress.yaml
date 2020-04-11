@@ -12,10 +12,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - xmas-trees.charlieegan3.co.uk
+    - xmas-trees.charlieegan3.com
     secretName: xmas-trees-tls
   rules:
-  - host: xmas-trees.charlieegan3.co.uk
+  - host: xmas-trees.charlieegan3.com
     http:
       paths:
       - path: /api(/v0/data/tree/main/validate)

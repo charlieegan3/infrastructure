@@ -10,10 +10,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - rssmerge.charlieegan3.co.uk
+    - rssmerge.charlieegan3.com
     secretName: rssmerge-tls
   rules:
-  - host: rssmerge.charlieegan3.co.uk
+  - host: rssmerge.charlieegan3.com
     http:
       paths:
       - path: /
