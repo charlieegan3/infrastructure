@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: exporter
+  namespace: speedtest-exporter
+spec:
+  selector:
+    matchLabels:
+      app: exporter
+  template:
+    metadata:
+      labels:
+        app: exporter
+    spec:
+      containers:
+      - name: exporter
+        image: charlieegan3/speedtest_exporter:arm-883c8cab1515a4b034210e86848828e243989edd
+        ports:
+        - containerPort: 9112
+          protocol: TCP
+          name: metrics
+        resources:
+          requests:
+            memory: "50Mi"
+            cpu: "100m"
+          limits:
+            memory: "100Mi"
+            cpu: "1000m"

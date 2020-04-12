@@ -114,9 +114,9 @@ vault write auth/kubernetes/role/personal-website \
   ttl=1h
 vault policy write personal-website policies/personal-website.hcl
 
-vault write auth/kubernetes/role/flashcards-api \
+vault write auth/kubernetes/role/edgemax-exporter \
   bound_service_account_names=default \
-  bound_service_account_namespaces=flashcards \
-  policies=flashcards-api \
+  bound_service_account_namespaces=edgemax-exporter \
+  policies=edgemax-exporter \
   ttl=1h
-vault policy write flashcards-api policies/flashcards-api.hcl
+vault policy write edgemax-exporter policies/edgemax-exporter.hcl

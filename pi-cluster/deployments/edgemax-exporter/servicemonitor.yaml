@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: edgemax-exporter
+  namespace: edgemax-exporter
+spec:
+  endpoints:
+  - interval: 30s
+    port: metrics
+    scheme: http
+    scrapeTimeout: 30s
+  jobLabel: app
+  selector:
+    matchLabels:
+      app: exporter

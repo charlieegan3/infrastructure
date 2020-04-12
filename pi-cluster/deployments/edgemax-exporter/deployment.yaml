@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: exporter
+  namespace: edgemax-exporter
+spec:
+  selector:
+    matchLabels:
+      app: exporter
+  template:
+    metadata:
+      labels:
+        app: exporter
+      annotations:
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/role: "edgemax-exporter"
+        vault.hashicorp.com/agent-pre-populate-only: "true"
+        vault.hashicorp.com/agent-inject-secret-env: "secret/edgemax-exporter/env"
+        vault.hashicorp.com/agent-inject-template-env: |
+          {{- with secret "secret/edgemax-exporter/env" -}}
+          {{- .Data.text -}}
+          {{- end -}}
+    spec:
+      containers:
+      - name: exporter
+        image: "charlieegan3/edgemax_exporter:arm-75cf725f0481c70ac85164fed5269aa58dbf267a"
+        ports:
+        - containerPort: 9132
+          protocol: TCP
+          name: metrics
+        env:
+        - name: ENV_PATH
+          value: /vault/secrets/env
+        resources:
+          requests:
+            memory: "50Mi"
+            cpu: "100m"
+          limits:
+            memory: "50Mi"
+            cpu: "100m"

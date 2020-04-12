@@ -17,6 +17,15 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet')
            + (import 'image_sources_versions.jsonnet') +
            {
              _config+:: {
+               prometheus+:: {
+                 namespaces: [
+                   'speedtest-exporter',
+                   'edgemax-exporter',
+                   'default',
+                   'kube-system',
+                   'monitoring',
+                 ],
+               },
                grafana+:: {
                  datasources: [],  // populated from secret
                  config: {
