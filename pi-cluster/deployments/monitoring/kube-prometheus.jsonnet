@@ -41,6 +41,7 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet')
              grafanaDashboards: {
                'k8s.json': (import 'dashboards/k8s.json'),
                'finance.json': (import 'dashboards/finance.json'),
+               'network.json': (import 'dashboards/network.json'),
              },
              prometheusAlerts+:: {
                groups: std.map(
