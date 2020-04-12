@@ -77,11 +77,6 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: serializer
----
-apiVersion: v1
-kind: Namespace
-metadata:
   name: photos
 ---
 apiVersion: v1
@@ -103,3 +98,8 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: edgemax-exporter
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kubernetes-dashboard
