@@ -4,6 +4,9 @@ output "photos_cronjob_sa_key" {
 output "music_uploader_sa_key" {
   value = google_service_account_key.music_bigquery_uploader.private_key
 }
+output "stackr_sa_key" {
+  value = google_service_account_key.stackr.private_key
+}
 output "vault_sa_key" {
   value = google_service_account_key.vault.private_key
 }

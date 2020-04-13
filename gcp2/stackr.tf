@@ -18,6 +18,10 @@ resource "google_service_account" "stackr" {
   project      = google_project.stackr.project_id
 }
 
+resource "google_service_account_key" "stackr" {
+  service_account_id = google_service_account.stackr.name
+}
+
 resource "google_project_iam_binding" "stackr_storage_admin" {
   project = google_project.stackr.project_id
   role    = "roles/storage.admin"
