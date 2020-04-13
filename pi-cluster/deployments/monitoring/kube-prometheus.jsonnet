@@ -75,6 +75,11 @@ local kp = (import 'kube-prometheus/kube-prometheus.libsonnet')
                              rule {
                                expr: 'time() - kube_cronjob_next_schedule_time{job="kube-state-metrics"} > 604800',
                              }
+                           else if rule.alert == 'KubeJobFailed' then
+                             rule {
+                               // ignore jobs from cronjobs
+                               expr: 'kube_job_failed{condition="true"}  * on (job_name) group_left(label_cronjob) kube_job_labels{label_cronjob=""}',
+                             }
                            else
                              rule,
                          group.rules
