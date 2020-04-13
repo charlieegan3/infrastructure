@@ -1,4 +1,0 @@
-prometheus:
-  monitor:
-    # need to set a custom job label and this isn't configurable from the chart
-    enabled: false

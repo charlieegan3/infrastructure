@@ -6,8 +6,7 @@ about it.
 This repo contains all the configuration for my personal cluster, GCP account
 and side projects.
 
-* [GCP Terraform Config](./gcp/README.md)
-* [k8s Config](./k8s/README.md)
+* [Terraform Config](./terraform/README.md)
 * [Vault Config](./vault/config/README.md)
 * [PI Cluster](./pi-cluster/README.md)
 
