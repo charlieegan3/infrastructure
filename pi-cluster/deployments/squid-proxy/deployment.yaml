@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proxy
+  namespace: squid-proxy
+spec:
+  selector:
+    matchLabels:
+      app: proxy
+  template:
+    metadata:
+      labels:
+        app: proxy
+      annotations:
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/role: "squid-proxy"
+        vault.hashicorp.com/agent-pre-populate-only: "true"
+        vault.hashicorp.com/agent-inject-secret-env: "secret/squid-proxy/env"
+        vault.hashicorp.com/agent-inject-template-env: |
+          {{- with secret "secret/squid-proxy/env" -}}
+          {{- .Data.text -}}
+          {{- end -}}
+    spec:
+      containers:
+      - name: proxy
+        image: "charlieegan3/squid-proxy:arm-d06145cb5b7deb388548e4945485e6f3d8d0b9e6"
+        ports:
+        - containerPort: 3128
+          protocol: TCP
+          name: http
+        env:
+        - name: ENV_PATH
+          value: /vault/secrets/env
+        resources:
+          requests:
+            memory: "50Mi"
+            cpu: "100m"
+          limits:
+            memory: "50Mi"
+            cpu: "100m"
