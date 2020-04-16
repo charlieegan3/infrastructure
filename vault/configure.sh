@@ -121,9 +121,9 @@ vault write auth/kubernetes/role/edgemax-exporter \
   ttl=1h
 vault policy write edgemax-exporter policies/edgemax-exporter.hcl
 
-vault write auth/kubernetes/role/squid-proxy \
+vault write auth/kubernetes/role/simple-proxy \
   bound_service_account_names=default \
-  bound_service_account_namespaces=squid-proxy \
-  policies=squid-proxy \
+  bound_service_account_namespaces=simple-proxy \
+  policies=simple-proxy \
   ttl=1h
-vault policy write squid-proxy policies/squid-proxy.hcl
+vault policy write simple-proxy policies/simple-proxy.hcl
