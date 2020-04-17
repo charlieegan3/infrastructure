@@ -58,12 +58,12 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(edgemax_interfaces_received_bytes{name=\"pppoe0\"}[5m])",
+          "expr": "sum(rate(edgemax_interfaces_received_bytes{name=\"pppoe0\"}[5m])) by (service)",
           "legendFormat": "receive",
           "refId": "A"
         },
         {
-          "expr": "rate(edgemax_interfaces_transmitted_bytes{name=\"pppoe0\"}[5m])",
+          "expr": "sum(rate(edgemax_interfaces_transmitted_bytes{name=\"pppoe0\"}[5m])) by (service)",
           "legendFormat": "transmit",
           "refId": "B"
         }
