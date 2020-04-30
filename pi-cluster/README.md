@@ -7,11 +7,8 @@ Create Disk
 * [Install Etcher](https://www.balena.io/etcher)
 * [Download Raspbian](https://downloads.raspberrypi.org/raspbian_lite_latest)
 * Flash SD with Etcher
-*
-
-	```
-	touch /media/$(whoami)/boot/ssh
-	```
+* Mount the boot disk
+* `touch /media/$(whoami)/boot/ssh`
 
 Bootstrap PI
 
@@ -20,7 +17,7 @@ Bootstrap PI
 passwd
 
 # set the hostname var
-export HOSTNAME=...
+export HOSTNAME=... # worker-n, master
 ```
 
 Then
@@ -49,7 +46,13 @@ sudo su -c 'echo "127.0.1.1       $HOSTNAME" >> /etc/hosts'
 # enable cgroups
 echo 'cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory' | sudo tee -a /boot/cmdline.txt
 
-# reboot
+# show the mac address for router lease
+ifconfig -a | grep eth0 -a3 | tail -n 1 | awk '{ print $2}'
+```
+
+Configure the router lease, then:
+
+```
 sudo shutdown -r now
 ```
 
