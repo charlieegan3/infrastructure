@@ -42,11 +42,6 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: drive-backup
----
-apiVersion: v1
-kind: Namespace
-metadata:
   name: calendars
 ---
 apiVersion: v1

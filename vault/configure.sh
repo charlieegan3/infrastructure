@@ -72,13 +72,6 @@ vault write auth/kubernetes/role/airtable-spaced-repetition \
   ttl=1h
 vault policy write airtable-spaced-repetition policies/airtable-spaced-repetition.hcl
 
-vault write auth/kubernetes/role/drive-backup \
-  bound_service_account_names=default \
-  bound_service_account_namespaces=drive-backup \
-  policies=drive-backup \
-  ttl=1h
-vault policy write drive-backup policies/drive-backup.hcl
-
 vault write auth/kubernetes/role/photos \
   bound_service_account_names=archive \
   bound_service_account_namespaces=photos \
