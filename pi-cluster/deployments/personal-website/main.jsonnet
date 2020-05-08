@@ -7,7 +7,7 @@ local p =
   {
     name: 'personal-website',
     images: {
-      web: 'charlieegan3/personal-website:arm-1a5375bf552d8ea372ea02fe245646ef',
+      web: 'charlieegan3/personal-website:28f2cbdaf2d60869a3cced3b4c5ac1015adc9134',
       json: 'charlieegan3/json-charlieegan3:arm-8ff0c09dd41f236461e7bcf6ddc5874d',
     },
     appLabel: 'app.kubernetes.io/name',
