@@ -53,6 +53,7 @@ local container = cronJob.mixin.spec.jobTemplate.spec.template.spec.containersTy
       cronJob.mixin.spec.withSchedule('*/10 * * * *') +
       cronJob.mixin.spec.withConcurrencyPolicy('Forbid') +
       cronJob.mixin.spec.withSuccessfulJobsHistoryLimit(1) +
+      cronJob.mixin.spec.withStartingDeadlineSeconds(30) +
       cronJob.mixin.spec.withFailedJobsHistoryLimit(1) +
       cronJob.mixin.spec.jobTemplate.spec.template.spec.withRestartPolicy('OnFailure') +
 

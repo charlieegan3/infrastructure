@@ -8,7 +8,7 @@ local p =
     name: 'personal-website',
     images: {
       web: 'charlieegan3/personal-website:0047d51edfa078c4ca5b3e4b82b52a5c61aaca9a',
-      json: 'charlieegan3/json-charlieegan3:arm-8ff0c09dd41f236461e7bcf6ddc5874d',
+      json: 'charlieegan3/json-charlieegan3:arm-8338a7932a5d27e7340fc2e474cef123',
     },
     appLabel: 'app.kubernetes.io/name',
   };
