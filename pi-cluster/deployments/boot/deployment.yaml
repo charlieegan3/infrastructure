@@ -14,7 +14,7 @@ spec:
         app: boot
     spec:
       containers:
-      - image: "charlieegan3/boot:arm-eb295266fcfbc93c3d844ee7e5e494d3c0b3af14"
+      - image: "charlieegan3/boot:arm-765c57982872cabcf503c1bcc3c2ad0abb9e6df2"
         name: boot
         ports:
         - name: http1
