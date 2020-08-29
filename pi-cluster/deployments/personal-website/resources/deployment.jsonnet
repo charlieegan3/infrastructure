@@ -1,4 +1,4 @@
-local k = import 'ksonnet-lib/ksonnet.beta.4/k.libsonnet';
+local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
 
 local deployment = k.apps.v1.deployment;
 local container = deployment.mixin.spec.template.spec.containersType;
@@ -14,7 +14,6 @@ local container = deployment.mixin.spec.template.spec.containersType;
         container.new($.name, $.images.web) +
         container.mixin.resources.withRequests({ cpu: '50m', memory: '100Mi' }) +
         container.mixin.resources.withLimits({ cpu: '100m', memory: '200Mi' }) +
-        container.withVolumeMountsMixin({ name: 'status-json', mountPath: '/usr/share/nginx/html/data' }) +
         container.withPorts([
           { containerPort: 80 },
         ]);
@@ -23,13 +22,6 @@ local container = deployment.mixin.spec.template.spec.containersType;
       deployment.mixin.metadata.withNamespace($.name) +
       deployment.mixin.metadata.withLabels({ [$.appLabel]: $.name }) +
       deployment.mixin.spec.selector.withMatchLabels($.resources.deployment.metadata.labels) +
-      deployment.mixin.spec.template.metadata.withLabels($.resources.deployment.metadata.labels) +
-      deployment.mixin.spec.template.spec.withVolumes(
-        {
-          name: 'status-json',
-          configMap:
-            { name: 'status-json' },
-        }
-      ),
+      deployment.mixin.spec.template.metadata.withLabels($.resources.deployment.metadata.labels),
   },
 }
