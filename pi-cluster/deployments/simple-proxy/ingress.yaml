@@ -12,10 +12,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - proxy.charlieegan3.com
+    - proxy.home.charlieegan3.com
     secretName: proxy-tls
   rules:
-  - host: proxy.charlieegan3.com
+  - host: proxy.home.charlieegan3.com
     http:
       paths:
       - path: /

@@ -8,9 +8,9 @@ image:
 extraArgs:
   provider: github
   set-xauthrequest: "true"
-  cookie-domain: .charlieegan3.com
-  whitelist-domain: .charlieegan3.com
-  redirect-url: "https://auth.charlieegan3.com/oauth2/callback"
+  cookie-domain: .home.charlieegan3.com
+  whitelist-domain: .home.charlieegan3.com
+  redirect-url: "https://auth.home.charlieegan3.com/oauth2/callback"
   config: /vault/secrets/oauth2_proxy.cfg
 
 podAnnotations:
@@ -31,11 +31,11 @@ ingress:
   enabled: true
   path: /
   hosts:
-  - auth.charlieegan3.com
+  - auth.home.charlieegan3.com
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
     kubernetes.io/ingress.class: nginx
   tls:
   - secretName: auth-tls
     hosts:
-    - auth.charlieegan3.com
+    - auth.home.charlieegan3.com
