@@ -4,6 +4,9 @@ output "photos_cronjob_sa_key" {
 output "photo_library_sa_key" {
   value = google_service_account_key.photo_library.private_key
 }
+output "vpn_sa_key" {
+  value = google_service_account_key.vpn.private_key
+}
 output "music_uploader_sa_key" {
   value = google_service_account_key.music_bigquery_uploader.private_key
 }
