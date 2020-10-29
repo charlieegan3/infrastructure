@@ -61,7 +61,7 @@ sudo shutdown -r now
 ```bash
 # install k3s
 export TOKEN=...
-export INSTALL_K3S_VERSION=v1.17.4+k3s1
+export INSTALL_K3S_VERSION=v1.18.10+k3s1
 export INSTALL_K3S_EXEC="--no-deploy=traefik,servicelb,local-storage --token=$TOKEN"
 k3s-install.sh
 
@@ -84,13 +84,24 @@ export K3S_TOKEN=...
 k3s-install.sh
 ```
 
-## Upgrade Steps
+## Master Upgrade Steps
 
 ```
 sudo su -c 'curl -sfL https://get.k3s.io > /usr/local/bin/k3s-install.sh'
 sudo chmod +x /usr/local/bin/k3s-install.sh
 
-export INSTALL_K3S_VERSION=v1.17.4+k3s1
+export INSTALL_K3S_VERSION=v1.18.10+k3s1
+k3s-install.sh
+```
+
+k3s-install.sh
+## Node Upgrade Steps
+
+```
+sudo su -c 'curl -sfL https://get.k3s.io > /usr/local/bin/k3s-install.sh'
+sudo chmod +x /usr/local/bin/k3s-install.sh
+
+export INSTALL_K3S_VERSION=v1.18.10+k3s1
 export K3S_URL=https://192.168.1.200:6443
 export K3S_TOKEN=...
 k3s-install.sh
