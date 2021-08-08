@@ -50,14 +50,14 @@ resource "google_bigquery_dataset" "music" {
   project       = google_project.music.project_id
 }
 
-resource "google_bigquery_table" "music_plays" {
- dataset_id = google_bigquery_dataset.music.dataset_id
- table_id   = "plays"
- project    = google_project.music.project_id
+#resource "google_bigquery_table" "music_plays" {
+# dataset_id = google_bigquery_dataset.music.dataset_id
+# table_id   = "plays"
+# project    = google_project.music.project_id
 
- schema = file("music_dataset_schema.json")
-  deletion_protection = false
-}
+# schema = file("music_dataset_schema.json")
+#  deletion_protection = false
+#}
 
 resource "google_service_account" "music_bigquery_uploader" {
   account_id   = "bigquery-uploader"
