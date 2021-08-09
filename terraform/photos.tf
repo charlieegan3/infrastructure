@@ -39,3 +39,9 @@ resource "google_storage_bucket" "photos" {
     enabled = true
   }
 }
+
+resource "google_storage_bucket_access_control" "public_rule" {
+  bucket = google_storage_bucket.photos.name
+  role   = "READER"
+  entity = "allUsers"
+}
