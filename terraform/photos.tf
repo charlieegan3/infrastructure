@@ -40,8 +40,8 @@ resource "google_storage_bucket" "photos" {
   }
 }
 
-resource "google_storage_bucket_access_control" "public_rule" {
+resource "google_storage_bucket_iam_member" "public_access" {
   bucket = google_storage_bucket.photos.name
-  role   = "READER"
-  entity = "allUsers"
+  role   = "roles/storage.objectViewer"
+  member = "allUsers"
 }
