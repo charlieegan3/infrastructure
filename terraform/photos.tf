@@ -59,6 +59,34 @@ resource "google_storage_bucket" "cms" {
   }
 }
 
+resource "google_storage_bucket" "cms_database_backups" {
+  name          = "charlieegan3-photos-cms-database-backups"
+  location      = "EU"
+  project       = google_project.photos.project_id
+
+  versioning {
+    enabled = true
+  }
+
+  lifecycle_rule {
+    condition {
+      num_newer_versions = 10
+    }
+    action {
+      type = "Delete"
+    }
+  }
+
+  lifecycle_rule {
+    condition {
+      age = 365
+    }
+    action {
+      type = "Delete"
+    }
+  }
+}
+
 resource "google_storage_bucket_iam_member" "public_access_cms" {
   bucket = google_storage_bucket.cms.name
   role   = "roles/storage.objectViewer"
@@ -68,18 +96,32 @@ resource "google_storage_bucket_iam_member" "public_access_cms" {
 resource "google_service_account" "photos_cms" {
   project      = google_project.photos.project_id
   account_id   = "photos-cms"
-  display_name = "CMS"
+  display_name = "CMS Application"
 }
 
-resource "google_project_iam_binding" "storage_admin_cms" {
-  project = google_project.photos.project_id
-  role    = "roles/storage.admin"
-
-  members = [
-    "serviceAccount:${google_service_account.photos_cms.email}",
-  ]
+resource "google_storage_bucket_iam_member" "cms_admin" {
+  bucket = google_storage_bucket.cms.name
+  role = "roles/storage.admin"
+  member = "serviceAccount:${google_service_account.photos_cms.email}"
 }
 
+resource "google_service_account" "photos_cms_gh_actions" {
+  project      = google_project.photos.project_id
+  account_id   = "github-actions"
+  display_name = "GitHub Actions"
+}
+
+resource "google_storage_bucket_iam_member" "gh_actions_database_backups" {
+  bucket = google_storage_bucket.cms_database_backups.name
+  role = "roles/storage.admin"
+  member = "serviceAccount:${google_service_account.photos_cms_gh_actions.email}"
+}
+
+// service account keys
 resource "google_service_account_key" "photos_cms" {
   service_account_id = google_service_account.photos_cms.name
+}
+
+resource "google_service_account_key" "photos_cms_gh_actions" {
+  service_account_id = google_service_account.photos_cms_gh_actions.name
 }
