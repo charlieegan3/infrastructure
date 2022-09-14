@@ -144,6 +144,10 @@ resource "google_bigquery_table" "photos_points" {
   project    = google_project.photos.project_id
 
   schema = file("points_table_schema.json")
+
+  depends_on = [
+    google_bigquery_dataset.location
+  ]
 }
 
 resource "google_project_iam_binding" "photos_bq_upload" {
