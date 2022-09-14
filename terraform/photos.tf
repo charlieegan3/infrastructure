@@ -5,12 +5,6 @@ resource "google_project" "photos" {
   billing_account = var.billing_account
 }
 
-resource "google_project_service" "project" {
-  project = google_project.photos.project_id
-  service = "bigquery.googleapis.com"
-  disable_dependent_services = false
-}
-
 resource "google_project_service" "photos_storage_api" {
   project = google_project.photos.project_id
   service = "storage-api.googleapis.com"
@@ -123,7 +117,54 @@ resource "google_storage_bucket_iam_member" "gh_actions_database_backups" {
   member = "serviceAccount:${google_service_account.photos_cms_gh_actions.email}"
 }
 
-// service account keys
+// bigquery points settings
+
+resource "google_project_service" "project" {
+  project = google_project.photos.project_id
+  service = "bigquery.googleapis.com"
+  disable_dependent_services = false
+}
+
+resource "google_bigquery_dataset" "location" {
+  project = google_project.photos.project_id
+
+  dataset_id    = "location"
+  friendly_name = "location"
+  location      = "EU"
+
+  access {
+    role          = "OWNER"
+    user_by_email = google_service_account.photos_cms.email
+  }
+}
+
+resource "google_bigquery_table" "photos_points" {
+  dataset_id = google_bigquery_dataset.location.dataset_id
+  table_id   = "points"
+  project    = google_project.photos.project_id
+
+  schema = file("points_table_schema.json")
+}
+
+resource "google_project_iam_binding" "photos_bq_upload" {
+  project = google_project.photos.project_id
+  role    = "roles/bigquery.dataEditor"
+
+  members = [
+    "serviceAccount:${google_service_account.photos_cms.email}",
+  ]
+}
+
+resource "google_project_iam_binding" "photos_bq_jobs" {
+  project = google_project.photos.project_id
+  role    = "roles/bigquery.jobUser"
+
+  members = [
+    "serviceAccount:${google_service_account.photos_cms.email}",
+  ]
+}
+
+// service account keys for outputs
 resource "google_service_account_key" "photos_cms" {
   service_account_id = google_service_account.photos_cms.name
 }

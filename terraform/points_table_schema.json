@@ -1,0 +1,62 @@
+[
+  {
+    "mode": "REQUIRED",
+    "name": "created_at",
+    "type": "TIMESTAMP"
+  },
+  {
+    "mode": "REQUIRED",
+    "name": "latitude",
+    "type": "FLOAT64"
+  },
+  {
+    "mode": "REQUIRED",
+    "name": "longitude",
+    "type": "FLOAT64"
+  },
+  {
+    "mode": "REQUIRED",
+    "name": "altitude",
+    "type": "FLOAT64"
+  },
+  {
+    "mode": "REQUIRED",
+    "name": "accuracy",
+    "type": "FLOAT64"
+  },
+  {
+    "mode": "REQUIRED",
+    "name": "vertical_accuracy",
+    "type": "FLOAT64"
+  },
+  {
+    "mode": "REQUIRED",
+    "name": "velocity",
+    "type": "FLOAT64"
+  },
+  {
+    "mode": "REQUIRED",
+    "name": "was_offline",
+    "type": "BOOL"
+  },
+  {
+    "mode": "REQUIRED",
+    "name": "importer_id",
+    "type": "INT64"
+  },
+  {
+    "mode": "REQUIRED",
+    "name": "caller_id",
+    "type": "INT64"
+  },
+  {
+    "mode": "REQUIRED",
+    "name": "reason_id",
+    "type": "INT64"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "activity_id",
+    "type": "INT64"
+  }
+]
