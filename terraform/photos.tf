@@ -5,6 +5,12 @@ resource "google_project" "photos" {
   billing_account = var.billing_account
 }
 
+resource "google_project_service" "project" {
+  project = google_project.photos.project_id
+  service = "bigquery.googleapis.com"
+  disable_dependent_services = false
+}
+
 resource "google_project_service" "photos_storage_api" {
   project = google_project.photos.project_id
   service = "storage-api.googleapis.com"
