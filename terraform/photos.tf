@@ -131,11 +131,6 @@ resource "google_bigquery_dataset" "location" {
   dataset_id    = "location"
   friendly_name = "location"
   location      = "EU"
-
-  access {
-    role          = "OWNER"
-    user_by_email = google_service_account.photos_cms.email
-  }
 }
 
 resource "google_bigquery_table" "photos_points" {
