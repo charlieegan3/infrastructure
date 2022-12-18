@@ -160,3 +160,36 @@ resource "google_storage_default_object_acl" "music_backup_data_storage" {
     "READER:allUsers",
   ]
 }
+
+resource "google_storage_bucket" "music_summary_data_covers" {
+  name     = "charlieegan3-music-data-covers"
+  location = "EU"
+  project  = google_project.music.project_id
+
+  cors {
+    origin = [
+      "*",
+    ]
+
+    method = [
+      "*",
+    ]
+  }
+}
+
+resource "google_storage_bucket_iam_binding" "music_summary_data_covers" {
+  bucket = google_storage_bucket.music_summary_data_covers.name
+  role   = "roles/storage.objectAdmin"
+
+  members = [
+    "serviceAccount:${google_service_account.music_bigquery_uploader.email}",
+  ]
+}
+
+resource "google_storage_default_object_acl" "music_summary_data_covers" {
+  bucket = google_storage_bucket.music_summary_data_covers.name
+
+  role_entity = [
+    "READER:allUsers",
+  ]
+}
