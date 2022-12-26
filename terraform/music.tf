@@ -58,14 +58,6 @@ resource "google_bigquery_table" "music_plays" {
   schema = file("music_dataset_schema.json")
 }
 
-resource "google_bigquery_table" "music_enriched" {
-  dataset_id = google_bigquery_dataset.music.dataset_id
-  table_id   = "enriched"
-  project    = google_project.music.project_id
-
-  schema = file("music_dataset_schema.json")
-}
-
 resource "google_service_account" "music_bigquery_uploader" {
   account_id   = "bigquery-uploader"
   display_name = "BigQuery Uploader"
@@ -92,39 +84,6 @@ resource "google_project_iam_binding" "music_query" {
 
 resource "google_service_account_key" "music_bigquery_uploader" {
   service_account_id = google_service_account.music_bigquery_uploader.name
-}
-
-resource "google_storage_bucket" "music_summary_data_storage" {
-  name     = "charlieegan3-music-data-summary"
-  location = "EU"
-  project  = google_project.music.project_id
-
-  cors {
-    origin = [
-      "*",
-    ]
-
-    method = [
-      "*",
-    ]
-  }
-}
-
-resource "google_storage_bucket_iam_binding" "music_summary_data_storage" {
-  bucket = google_storage_bucket.music_summary_data_storage.name
-  role   = "roles/storage.objectAdmin"
-
-  members = [
-    "serviceAccount:${google_service_account.music_bigquery_uploader.email}",
-  ]
-}
-
-resource "google_storage_default_object_acl" "music_summary_data_storage" {
-  bucket = google_storage_bucket.music_summary_data_storage.name
-
-  role_entity = [
-    "READER:allUsers",
-  ]
 }
 
 resource "google_storage_bucket" "music_backup_data_storage" {
