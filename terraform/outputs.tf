@@ -22,3 +22,8 @@ output "static_sa_key" {
   value     = google_service_account_key.static.private_key
   sensitive = true
 }
+
+output "stanley_sa_key" {
+  value     = google_service_account_key.stanley.private_key
+  sensitive = true
+}
